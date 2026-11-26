@@ -60,6 +60,10 @@ node engine/make.mjs 001-aurora templates/001-aurora/content.json --draft
 
 Twenty-one more, each with its own look, structure and soundtrack (newspaper front page, 8-bit arcade, film trailer, blueprint, comic page, slot machine, isometric 3D chart and others), are at [launchfx.dev](https://launchfx.dev). They drop into the `templates` folder of this repo.
 
+## Contact
+
+hello@launchfx.dev, or [@dev_emrah](https://x.com/dev_emrah) on X.
+
 ## Licence
 
 MIT for everything in this repo. The videos you make are yours.
