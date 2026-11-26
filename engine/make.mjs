@@ -1,5 +1,6 @@
 // One command from content file to finished video.
-// node engine/make.mjs <template id> <content.json> [--out name] [--draft]
+// node engine/make.mjs <template id> <content.json> [--out name] [--draft] [--social]
+//   --social also writes vertical (9:16) and square (1:1) versions with word-by-word captions
 //   --draft  quick preview: 30 fps, no motion blur (about 8x faster)
 import { spawnSync } from "node:child_process"
 import { existsSync } from "node:fs"
@@ -20,4 +21,5 @@ const run = (cmd, args) => { const r = spawnSync(cmd, args, { cwd: ROOT, stdio: 
 run(py, ["engine/tts.py", resolve(content), out])
 run("node", ["engine/render.mjs", id, "--content", resolve(content), "--out", name, ...(flag("draft") ? ["--fps", "30", "--mb", "1", "--crf", "24"] : [])])
 run(py, ["engine/audio.py", out])
+if (flag("social")) run("node", ["engine/social.mjs", name, "--content", resolve(content)])
 console.log(`\nvideo: ${join(out, name + ".mp4")}`)

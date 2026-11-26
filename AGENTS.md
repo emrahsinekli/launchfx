@@ -50,6 +50,8 @@ Then the final render (60 fps with motion blur, several minutes):
 node engine/make.mjs <id> projects/<name>/content.json
 ```
 
+Add `--social` to also get `out/<name>/<name>-vertical.mp4` (9:16, for TikTok, Reels and Shorts) and `<name>-square.mp4` (1:1, for feeds). Both carry the product name on top and the voice lines as word-by-word captions, so the video works with the sound off. If a voice line is spelled for the ear (for example "Launch F X"), add a `"captions"` list to the content file with the same five lines as they should be read on screen. To make them from a video that is already rendered: `node engine/social.mjs <name> --content projects/<name>/content.json`.
+
 Give the user the path `out/<name>/<name>.mp4`. For a smaller file to post on social media:
 
 ```

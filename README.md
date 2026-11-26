@@ -2,7 +2,7 @@
 
 Launch videos made by your own coding agent. Give Claude Code, Codex or Cursor your site address; it reads your site, writes the script, voices it, adds music and sound effects, and renders a 1080p MP4 on your machine.
 
-No accounts, no API keys, no per-video cost. Voice, music and effects are all generated locally.
+No accounts, no API keys, no per-video cost. Voice, music and effects are all generated locally. One run gives you the 16:9 video plus vertical and square versions with captions for TikTok, Reels, Shorts and feeds.
 
 This repo is the free edition: the full engine and three templates. Watch them with sound at [launchfx.dev](https://launchfx.dev).
 
@@ -39,7 +39,7 @@ node engine/brand.mjs https://yoursite.com
 node engine/make.mjs 001-aurora templates/001-aurora/content.json --draft
 ```
 
-`brand.mjs` opens your real site and saves your name, tagline, brand colours, logo, the numbers on your page and screenshots into `projects/<name>/`. Copy a template's `content.json` there, change the values (each template has a `GUIDE.md`), and run `make.mjs` on your copy. Drop `--draft` for the final 60 fps render with motion blur.
+`brand.mjs` opens your real site and saves your name, tagline, brand colours, logo, the numbers on your page and screenshots into `projects/<name>/`. Copy a template's `content.json` there, change the values (each template has a `GUIDE.md`), and run `make.mjs` on your copy. Drop `--draft` for the final 60 fps render with motion blur. Add `--social` to also get a vertical (9:16) and a square (1:1) version with word-by-word captions.
 
 ## How it works
 
