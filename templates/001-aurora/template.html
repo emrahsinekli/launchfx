@@ -1,0 +1,441 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>001 Aurora</title>
+<style>
+@font-face{font-family:Disp;src:url(/fonts/display.woff2);font-weight:200 800}
+@font-face{font-family:Sans;src:url(/fonts/sans.woff2);font-weight:100 900}
+@font-face{font-family:Mono;src:url(/fonts/mono.woff2);font-weight:100 800}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#03030a}
+#stage{position:absolute;inset:0;overflow:hidden;color:#fff;font-family:Sans;--h1:268;--h2:200;--h3:330;
+  --c1:oklch(.62 .26 var(--h1));--c2:oklch(.78 .16 var(--h2));--c3:oklch(.66 .25 var(--h3));--ok:oklch(.86 .17 150);
+  --grad:linear-gradient(100deg,oklch(.76 .19 var(--h1)),oklch(.88 .13 var(--h2)))}
+#gl,#fxc{position:absolute;inset:0;width:1920px;height:1080px}
+#fxc{mix-blend-mode:plus-lighter}
+#world{position:absolute;inset:0}
+#vig{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,.7) 100%)}
+#fade{position:absolute;inset:0;background:#000;opacity:0}
+.scene{position:absolute;inset:0;display:none;align-items:center;justify-content:center}
+.g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.rays{position:absolute;left:50%;top:50%;width:2400px;height:2400px;margin:-1200px;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,0) 0deg,rgba(255,255,255,.2) 3deg,rgba(255,255,255,0) 8deg,rgba(255,255,255,0) 17deg);-webkit-mask-image:radial-gradient(circle,#000 0,transparent 60%);mix-blend-mode:plus-lighter;filter:blur(5px);opacity:0}
+.streak{position:absolute;left:50%;top:50%;width:2800px;height:8px;margin:-4px -1400px;border-radius:4px;background:radial-gradient(ellipse at center,#fff 0,oklch(.85 .14 var(--h2)) 16%,transparent 68%);box-shadow:0 0 70px 14px oklch(.7 .2 var(--h1)/.55);mix-blend-mode:plus-lighter;opacity:0}
+
+/* 1 hook */
+.hook{font-family:Disp;font-weight:800;font-size:186px;line-height:1.02;letter-spacing:-.05em;text-align:center}
+.hook .ln{display:block;white-space:nowrap}
+.w{display:inline-block;margin:0 .1em;position:relative;padding-bottom:.1em}
+.ln.gl .w{background:linear-gradient(100deg,oklch(.76 .19 var(--h1)),oklch(.9 .12 var(--h2)),#fff,oklch(.9 .12 var(--h2)),oklch(.76 .19 var(--h1)));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
+.strike{position:absolute;left:-3%;right:-3%;top:49%;height:20px;border-radius:10px;background:linear-gradient(90deg,var(--c3),oklch(.8 .19 var(--h3)));transform-origin:0 50%;box-shadow:0 0 60px 6px var(--c3)}
+
+/* 2 and 5 lockup */
+.col{display:flex;flex-direction:column;align-items:center;gap:38px;position:relative}
+.lock{display:flex;align-items:center;gap:46px}
+.markwrap{position:relative;width:200px;height:200px;flex:none}
+.mark{position:absolute;inset:0;border-radius:54px;background:linear-gradient(135deg,oklch(.6 .27 var(--h1)),oklch(.84 .15 var(--h2)));box-shadow:0 30px 110px 0 var(--c1),0 0 40px 0 oklch(.84 .15 var(--h2)/.5),inset 0 2px 0 rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center}
+.mark svg{width:56%;height:56%}
+.ring{position:absolute;inset:0;border-radius:54px;border:4px solid rgba(255,255,255,.85);opacity:0}
+.name{font-family:Disp;font-weight:800;font-size:206px;letter-spacing:-.05em;line-height:1;display:flex;white-space:nowrap}
+.lt{display:inline-block;perspective:700px;padding:.06em 0 .12em}
+.lt i{display:inline-block;font-style:normal;transform-origin:50% 85%}
+.tag{font-size:48px;font-weight:450;color:rgba(255,255,255,.78);letter-spacing:-.01em;white-space:nowrap}
+.tw{display:inline-block;margin:0 .13em}
+
+/* 3 dashboard */
+.left{position:absolute;left:120px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:8px;font-family:Disp;font-weight:800;font-size:98px;letter-spacing:-.045em;line-height:1.08}
+.left div{white-space:nowrap;display:flex;align-items:center;gap:28px;padding-bottom:.08em;transform-origin:0 50%}
+.dot{width:28px;height:28px;border-radius:50%;background:var(--ok);flex:none}
+.rig{position:absolute;left:820px;top:195px;width:1020px;height:680px;perspective:2000px}
+.orbit{position:absolute;inset:0;transform-style:preserve-3d}
+.card{position:absolute;inset:0;overflow:hidden;border-radius:30px;background:linear-gradient(180deg,rgba(28,28,46,.95),rgba(12,12,22,.96));border:1px solid rgba(255,255,255,.16);box-shadow:0 70px 160px -20px rgba(0,0,0,.9),0 0 160px -20px var(--c1),inset 0 1px 0 rgba(255,255,255,.2);padding:32px;display:flex;flex-direction:column;gap:22px}
+.sheen{position:absolute;top:-50%;left:0;width:200px;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent)}
+.chead{display:flex;align-items:center;gap:14px;font-size:26px;font-weight:600}
+.mini{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--c1),var(--c2))}
+.live{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:19px;font-weight:600;color:var(--ok);background:oklch(.5 .15 150/.16);border:1px solid oklch(.7 .17 150/.35);padding:8px 16px;border-radius:99px}
+.live b{width:10px;height:10px;border-radius:50%;background:var(--ok)}
+.kpis{display:flex;gap:18px}
+.kpi{flex:1;border-radius:20px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);padding:20px 22px}
+.kpi .l,.chart .l{font-size:19px;color:rgba(255,255,255,.58);font-weight:500}
+.kpi .v{font-family:Disp;font-weight:700;font-size:56px;letter-spacing:-.035em;margin-top:6px;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi .d{display:inline-block;margin-top:8px;font-size:17px;font-weight:600;color:var(--ok);background:oklch(.5 .15 150/.16);padding:4px 10px;border-radius:8px}
+.chart{flex:1;min-height:0;border-radius:20px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+.chart svg{flex:1;min-height:0;width:100%;overflow:visible}
+.sat{position:absolute;padding:16px 24px 16px 16px;border-radius:22px;background:linear-gradient(180deg,rgba(44,44,70,.96),rgba(26,26,44,.96));border:1px solid rgba(255,255,255,.22);box-shadow:0 40px 80px -10px rgba(0,0,0,.8),0 0 70px -14px var(--c2),inset 0 1px 0 rgba(255,255,255,.25);display:flex;gap:16px;align-items:center;font-size:22px;font-weight:600;white-space:nowrap}
+.sat small{display:block;font-size:17px;font-weight:500;color:rgba(255,255,255,.6);margin-top:3px}
+.sat .ic{width:50px;height:50px;border-radius:15px;background:var(--grad);display:flex;align-items:center;justify-content:center;flex:none}
+.sat .ic svg{width:26px;height:26px}
+
+/* 4 ask */
+.ask{width:1260px;display:flex;flex-direction:column;gap:30px;perspective:1800px}
+.kick{align-self:flex-start;display:flex;gap:12px;align-items:center;font-size:27px;font-weight:600;color:rgba(255,255,255,.9);padding:10px 22px 10px 16px;border-radius:99px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18)}
+.kick svg{width:24px;height:24px}
+.pill{height:134px;border-radius:40px;border:3px solid transparent;background-origin:border-box;background-clip:padding-box,border-box;display:flex;align-items:center;padding:0 46px;font-size:50px;font-weight:500;letter-spacing:-.02em;white-space:pre}
+.caret{display:inline-block;width:4px;height:60px;background:var(--c2);margin-left:6px;border-radius:2px;box-shadow:0 0 18px var(--c2)}
+.ans{transform-origin:50% 0;border-radius:40px;background:linear-gradient(180deg,rgba(30,30,50,.96),rgba(14,14,26,.97));border:1px solid rgba(255,255,255,.16);box-shadow:0 60px 140px -30px rgba(0,0,0,.9),0 0 120px -40px var(--c2),inset 0 1px 0 rgba(255,255,255,.2);padding:46px 50px;display:flex;gap:52px;align-items:center}
+.ans .t{flex:1;min-width:0}
+.ans .lb{font-size:22px;font-weight:600;color:oklch(.88 .13 var(--h2));text-transform:uppercase;letter-spacing:.14em}
+.ans .a{font-family:Disp;font-weight:800;font-size:84px;letter-spacing:-.04em;line-height:1.08;margin-top:10px;white-space:nowrap}
+.ans .dt{font-size:29px;color:rgba(255,255,255,.66);margin-top:12px;white-space:nowrap}
+.bars{width:440px;flex:none;display:flex;flex-direction:column;gap:17px}
+.bar{display:grid;grid-template-columns:112px 1fr 62px;align-items:center;gap:14px;font-size:22px;color:rgba(255,255,255,.74);font-weight:500}
+.bar .tr{height:22px;border-radius:11px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar .fl{height:100%;border-radius:11px;background:rgba(255,255,255,.32);transform-origin:0 50%}
+.bar:first-child .fl{background:var(--grad);box-shadow:0 0 24px var(--c2)}
+.bar .n{text-align:right;font-variant-numeric:tabular-nums;color:#fff;font-weight:600}
+
+/* 5 end */
+.line{font-family:Disp;font-size:80px;font-weight:700;letter-spacing:-.035em;white-space:nowrap}
+.cta{position:relative;overflow:hidden;display:flex;align-items:center;gap:22px;font-size:40px;font-weight:650;padding:20px 22px 20px 48px;border-radius:99px;background:#fff;color:#0a0a12;margin-top:14px}
+.cta span{font-family:Mono;font-size:29px;font-weight:500;background:#0a0a12;color:#fff;padding:14px 26px;border-radius:99px}
+.cta em{position:absolute;top:0;bottom:0;left:0;width:160px;background:linear-gradient(90deg,transparent,oklch(.8 .16 var(--h1)/.55),transparent)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><filter id="ca" x="-3%" y="-3%" width="106%" height="106%" color-interpolation-filters="sRGB">
+  <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/><feOffset id="car" in="r" dx="0" result="ro"/>
+  <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="gg"/>
+  <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b"/><feOffset id="cab" in="b" dx="0" result="bo"/>
+  <feBlend in="ro" in2="gg" mode="screen" result="rg"/><feBlend in="rg" in2="bo" mode="screen"/>
+</filter></svg>
+<div id="stage">
+  <canvas id="gl" width="1920" height="1080"></canvas>
+  <div id="world">
+    <div class="scene" id="s1"><div class="hook"></div></div>
+    <div class="scene" id="s2"><div class="col"></div></div>
+    <div class="scene" id="s3"><div class="left"></div><div class="rig"><div class="orbit"><div class="card"></div></div></div></div>
+    <div class="scene" id="s4"><div class="ask"></div></div>
+    <div class="scene" id="s5"><div class="col"></div></div>
+  </div>
+  <canvas id="fxc" width="1920" height="1080"></canvas>
+  <div id="vig"></div>
+  <div id="fade"></div>
+</div>
+<script src="/engine/kit.js"></script>
+<script>
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)]
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e }
+const STAR = '<svg viewBox="0 0 24 24"><path fill="#fff" d="M12 1C12.8 7.5 16.5 11.2 23 12 16.5 12.8 12.8 16.5 12 23 11.2 16.5 7.5 12.8 1 12 7.5 11.2 11.2 7.5 12 1Z"/></svg>'
+const inExpo = (x) => (x <= 0 ? 0 : Math.pow(2, 10 * x - 10))
+const rnd = (seed) => () => { seed |= 0; seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296 }
+const rgb = (css) => { const c = document.createElement("canvas"); c.width = c.height = 1; const x = c.getContext("2d"); x.fillStyle = css; x.fillRect(0, 0, 1, 1); const d = x.getImageData(0, 0, 1, 1).data; return [d[0] / 255, d[1] / 255, d[2] / 255] }
+let C, TL, R = {}, GL = {}
+// Paths in a content file are relative to the pack folder.
+const asset = (p) => (/^(https?:|data:|\/)/.test(p) ? p : "/" + p.split("\\").join("/"))
+
+// Flowing aurora background, drawn by a shader so it never repeats and never bands.
+function initGL(cols) {
+  const gl = $("#gl").getContext("webgl", { preserveDrawingBuffer: true, antialias: false })
+  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s }
+  const pr = gl.createProgram()
+  gl.attachShader(pr, sh(gl.VERTEX_SHADER, "attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}"))
+  gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, `precision highp float;uniform vec2 r;uniform float t,amp;uniform vec3 c1,c2,c3;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<5;i++){s+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return s;}
+void main(){vec2 p=(gl_FragCoord.xy-.5*r)/r.y;
+vec2 q=vec2(fbm(p*1.1+vec2(0.,t*.14)),fbm(p*1.1+vec2(5.2,-t*.11)));
+vec2 w=vec2(fbm(p*1.4+3.*q+vec2(1.7-t*.09,9.2)),fbm(p*1.4+3.*q+vec2(8.3,2.8+t*.1)));
+float f=fbm(p*1.2+3.2*w);
+vec3 col=mix(c1,c2,smoothstep(.25,.8,w.x));col=mix(col,c3,smoothstep(.4,.95,w.y)*.75);
+col*=pow(f,1.9)*2.6*amp;
+float cur=fbm(vec2(p.x*3.2+w.x*2.4,t*.22));
+col+=c2*pow(max(0.,cur-.47),2.)*5.*smoothstep(-.7,.6,p.y)*amp;
+col*=smoothstep(1.3,.2,length(p*vec2(.8,1.)));
+gl_FragColor=vec4(col+.008,1.);}`))
+  gl.linkProgram(pr); gl.useProgram(pr)
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer())
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW)
+  const a = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(a); gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0)
+  const U = (n) => gl.getUniformLocation(pr, n)
+  gl.uniform2f(U("r"), 1920, 1080)
+  cols.forEach((c, i) => gl.uniform3f(U("c" + (i + 1)), ...c))
+  GL = { gl, t: U("t"), amp: U("amp") }
+}
+
+function lockup(name) {
+  const lock = el("div", "lock"), mw = el("div", "markwrap"), ring = el("div", "ring"), ring2 = el("div", "ring"), mark = el("div", "mark"), nm = el("div", "name"), rays = el("div", "rays"), streak = el("div", "streak")
+  if (C.brand.logo) {
+    const im = el("img"); im.src = asset(C.brand.logo)
+    im.style.cssText = C.brand.logoPlain ? "width:100%;height:100%;object-fit:contain" : "width:64%;height:64%;object-fit:contain"
+    if (C.brand.logoPlain) { mark.style.background = "none"; mark.style.boxShadow = "none" }
+    mark.append(im)
+  } else mark.innerHTML = STAR
+  mw.append(rays, streak, ring, ring2, mark)
+  for (const ch of name) { const lt = el("span", "lt"); lt.append(el("i", null, ch)); nm.append(lt) }
+  lock.append(mw, nm)
+  return { lock, mw, ring, ring2, mark, nm, rays, streak, letters: $$("i", nm) }
+}
+const words = (cls, text) => { const d = el("div", cls); for (const w of text.split(" ")) d.append(el("span", "tw", w)); return d }
+
+window.setup = (c, vo) => {
+  C = c
+  const b = c.brand
+  if (b.hue == null) b.hue = b.color ? K.hue(b.color) : 268
+  if (b.hue2 == null) b.hue2 = b.color2 ? K.hue(b.color2) : (b.hue + 292) % 360
+  if (b.hue3 == null) b.hue3 = b.color3 ? K.hue(b.color3) : (b.hue + 62) % 360
+  const st = $("#stage")
+  st.style.setProperty("--h1", c.brand.hue); st.style.setProperty("--h2", c.brand.hue2); st.style.setProperty("--h3", c.brand.hue3)
+  const h = c.brand
+  initGL([rgb(`oklch(.5 .27 ${h.hue})`), rgb(`oklch(.74 .17 ${h.hue2})`), rgb(`oklch(.56 .26 ${h.hue3})`)])
+  R.pc = [`oklch(.8 .19 ${h.hue})`, `oklch(.9 .13 ${h.hue2})`, `oklch(.82 .19 ${h.hue3})`, "#fff", "#fff"].map((x) => rgb(x).map((v) => Math.round(v * 255)).join(","))
+  R.sc = $$(".scene"); R.world = $("#world"); R.fx = $("#fxc").getContext("2d")
+
+  // 1 hook
+  R.words = []
+  c.hook.forEach((line, li) => {
+    const ln = el("span", "ln" + (li ? " gl" : ""))
+    for (const w of line.split(" ")) {
+      const s = el("span", "w", w)
+      if (w.replace(/[^\w']/g, "") === c.strike) { R.sw = s; R.strike = el("span", "strike"); s.append(R.strike) }
+      ln.append(s); R.words.push(s)
+    }
+    $("#s1 .hook").append(ln)
+  })
+
+  // 2 logo
+  R.l2 = lockup(c.brand.name)
+  R.tag = words("tag", c.tagline)
+  $("#s2 .col").append(R.l2.lock, R.tag)
+
+  // 3 dashboard
+  R.lines = c.dash.lines.map((t, i) => {
+    const d = el("div"), last = i === c.dash.lines.length - 1
+    d.append(el("span", last ? "g" : null, t))
+    if (last) { R.dot = el("b", "dot"); d.append(R.dot) }
+    $("#s3 .left").append(d); return d
+  })
+  R.orbit = $("#s3 .orbit"); R.card = $("#s3 .card")
+  R.sheen = el("div", "sheen"); R.kpis = []
+  if (c.dash.image) {
+    // A real screenshot of the buyer's product replaces the drawn dashboard.
+    const im = el("img"); im.src = asset(c.dash.image)
+    im.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left"
+    R.card.style.padding = "0"; R.card.append(im, R.sheen)
+  } else {
+    const head = el("div", "chead"); head.append(el("div", "mini"), el("span", null, c.dash.title))
+    const live = el("div", "live"); R.liveDot = el("b"); live.append(R.liveDot, el("span", null, "Live")); head.append(live)
+    const kpis = el("div", "kpis")
+    R.kpis = c.dash.kpis.map((k) => { const e = el("div", "kpi"), v = el("div", "v", K.fmt(0, k)); e.append(el("div", "l", k.label), v, el("div", "d", k.delta ?? "")); kpis.append(e); return { e, v, k } })
+    const chart = el("div", "chart"); chart.append(el("div", "l", c.dash.chartTitle))
+    R.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); chart.append(R.svg)
+    R.card.append(head, kpis, chart, R.sheen)
+  }
+  const pos = ["left:-70px;top:-34px", "left:36%;bottom:-58px"]
+  R.sats = (c.dash.sats ?? []).map((s, i) => {
+    const e = el("div", "sat"), ic = el("div", "ic"), tx = el("div"); ic.innerHTML = STAR
+    tx.append(document.createTextNode(s.title), el("small", null, s.sub)); e.append(ic, tx); e.style.cssText = pos[i % 2]
+    R.orbit.append(e); return e
+  })
+
+  // 4 ask
+  const ask = $("#s4 .ask")
+  R.kick = el("div", "kick"); R.kick.innerHTML = STAR; R.kick.append(el("span", null, c.ask.kicker))
+  R.pill = el("div", "pill"); R.typed = el("span"); R.caret = el("span", "caret"); R.pill.append(R.typed, R.caret)
+  R.ans = el("div", "ans")
+  const tx = el("div", "t"); tx.append(el("div", "lb", c.ask.label), el("div", "a", c.ask.a), el("div", "dt", c.ask.detail))
+  const bars = el("div", "bars"), mx = Math.max(...c.ask.bars.map((b) => b.v))
+  R.bars = c.ask.bars.map((b) => { const r = el("div", "bar"), tr = el("div", "tr"), fl = el("div", "fl"), n = el("div", "n", "0%"); fl.style.width = (b.v / mx) * 100 + "%"; tr.append(fl); r.append(el("span", null, b.l), tr, n); bars.append(r); return { fl, n, v: b.v } })
+  R.ans.append(tx, bars)
+  ask.append(R.kick, R.pill, R.ans)
+
+  // 5 end
+  R.l5 = lockup(c.brand.name)
+  R.line = words("line", c.end.line)
+  R.cta = el("div", "cta"); R.shine = el("em"); R.cta.append(el("b", null, c.end.cta), el("span", null, c.brand.url), R.shine)
+  $("#s5 .col").append(R.l5.lock, R.line, R.cta)
+
+  // Measure with everything laid out.
+  R.sc.forEach((e) => (e.style.display = "flex"))
+  // Long buyer text shrinks to fit instead of overflowing.
+  const fit = (e, max) => { const w = e.offsetWidth; if (w > max) e.style.fontSize = (parseFloat(getComputedStyle(e).fontSize) * max) / w + "px" }
+  fit($("#s1 .hook"), 1720); fit($("#s3 .left"), 640); fit(R.l2.nm, 1300); fit(R.l5.nm, 1300); fit(R.tag, 1700); fit(R.line, 1700)
+  R.typed.textContent = c.ask.q; fit(R.typed, 1130); R.typed.textContent = ""
+  fit($(".a", R.ans), 640); fit($(".dt", R.ans), 640)
+  for (const l of [R.l2, R.l5]) { l.off = (l.nm.offsetWidth + 46) / 2; const r = l.mw.getBoundingClientRect(); l.cx = r.left + r.width / 2 + l.off; l.cy = r.top + r.height / 2 }
+  const pr = R.pill.getBoundingClientRect()
+  if (R.svg) {
+  const w = R.svg.clientWidth, hh = R.svg.clientHeight, sr = c.dash.series, lo = Math.min(...sr), hi = Math.max(...sr)
+  const pts = sr.map((v, i) => [(i / (sr.length - 1)) * w, hh - 10 - ((v - lo) / (hi - lo)) * (hh - 34)])
+  const d = K.curve(pts)
+  R.svg.setAttribute("viewBox", `0 0 ${w} ${hh}`)
+  R.svg.innerHTML = `<defs>
+    <linearGradient id="lg" x1="0" x2="1" y1="0" y2="0"><stop offset="0" style="stop-color:oklch(.7 .24 var(--h1))"/><stop offset="1" style="stop-color:oklch(.9 .13 var(--h2))"/></linearGradient>
+    <linearGradient id="ag" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:oklch(.72 .2 var(--h2));stop-opacity:.45"/><stop offset="1" style="stop-color:oklch(.7 .22 var(--h1));stop-opacity:0"/></linearGradient>
+    <clipPath id="cp"><rect id="cr" x="0" y="-20" width="0" height="${hh + 40}"/></clipPath></defs>
+    ${[0.25, 0.5, 0.75].map((f) => `<line x1="0" x2="${w}" y1="${hh * f}" y2="${hh * f}" stroke="rgba(255,255,255,.07)" stroke-width="1"/>`).join("")}
+    <path d="${d} L${w},${hh} L0,${hh} Z" fill="url(#ag)" clip-path="url(#cp)"/>
+    <path id="ln" d="${d}" fill="none" stroke="url(#lg)" stroke-width="6" stroke-linecap="round" style="filter:drop-shadow(0 0 14px oklch(.75 .2 var(--h2)))"/>
+    <circle id="halo" r="20" fill="#fff" opacity="0"/><circle id="pt" r="9" fill="#fff" opacity="0"/>`
+  R.ln = $("#ln"); R.len = R.ln.getTotalLength(); R.ln.style.strokeDasharray = R.len
+  R.cr = $("#cr"); R.pt = $("#pt"); R.halo = $("#halo")
+  }
+
+  // Timeline. Every cut lands on the music's beat grid; a scene grows when its voice line is longer.
+  const G = 0.5, off = [0.18, 0.5, 0.5, 0.35, 0.5], min = [2, 2, 3.5, 3.5, 3.5], tail = [0.5, 0.35, 0.5, 0.5, 1.3]
+  const s = [0]
+  for (let i = 0; i < 5; i++) s.push(Math.ceil((s[i] + Math.max(min[i], off[i] + vo[i] + tail[i])) / G - 1e-6) * G)
+  const dur = s.slice(1).map((x, i) => x - s[i])
+  const cues = [], imp = [], bursts = []
+  const cue = (t, k, o = {}) => cues.push({ t: +t.toFixed(3), k, ...o })
+  const hit = (t, p) => imp.push({ t, p })
+  const burst = (t, x, y, n, sp, life) => bursts.push({ t, x, y, n, sp, life, seed: bursts.length * 977 + 13 })
+
+  const wordAt = R.words.map((_, k) => Math.max(0.06, off[0] - 0.1 + (k / R.words.length) * vo[0] * 0.92))
+  const strikeAt = Math.min(dur[0] - 0.62, wordAt[wordAt.length - 1] + 0.42)
+  wordAt.forEach((a, k) => { cue(a, "slam", { i: k }); hit(a + 0.06, 0.22) })
+  cue(strikeAt, "swish"); cue(strikeAt, "glitch"); hit(strikeAt + 0.1, 0.32)
+  for (let i = 1; i < 4; i++) cue(s[i] - 0.3, "whoosh")
+  cue(s[1] + 0.2, "impact"); cue(s[1] + 0.48, "shimmer"); hit(s[1] + 0.24, 0.95); burst(s[1] + 0.24, R.l2.cx, R.l2.cy, 110, 1900, 1.1)
+  const lineAt = R.lines.map((_, k) => off[2] - 0.08 + [0, 0.37, 0.74][k % 3] * vo[2])
+  const kpiAt = R.kpis.map((_, k) => 0.42 + k * 0.15), satAt = R.sats.map((_, k) => 1.25 + k * 0.5)
+  lineAt.forEach((a, k) => { cue(s[2] + a, "slam", { i: k }); hit(s[2] + a + 0.06, 0.14) })
+  kpiAt.forEach((a, k) => cue(s[2] + a + 0.05, "blip", { i: k }))
+  satAt.forEach((a, k) => cue(s[2] + a, "pop", { i: k }))
+  if (R.svg) cue(s[2] + 0.8, "draw", { d: 1.6 })
+  const n = c.ask.q.length, typeAt = 0.42, typeDur = Math.min(1.25, n * 0.032), ansAt = typeAt + typeDur + 0.2
+  for (let i = 0; i < n; i++) if (c.ask.q[i] !== " ") cue(s[3] + typeAt + (i / n) * typeDur, "key")
+  cue(s[3] + ansAt, "impact"); cue(s[3] + ansAt, "shimmer"); hit(s[3] + ansAt + 0.04, 0.55); burst(s[3] + ansAt, pr.left + pr.width / 2, pr.bottom, 80, 1400, 0.95)
+  const barAt = R.bars.map((_, k) => ansAt + 0.22 + k * 0.09)
+  barAt.forEach((a, k) => cue(s[3] + a, "blip", { i: 3 - k }))
+  cue(s[4] - 1.0, "riser", { d: 1.0 }); cue(s[4] + 0.02, "boom"); cue(s[4] + 0.3, "chime"); cue(s[4] + 1.25, "pop")
+  hit(s[4] + 0.05, 1.3); burst(s[4] + 0.06, R.l5.cx, R.l5.cy, 220, 2500, 1.5)
+  for (let t = s[2]; t < s[4] - 0.1; t += G) hit(t, 0.07)
+  TL = { s, dur, off, wordAt, strikeAt, lineAt, kpiAt, satAt, typeAt, typeDur, ansAt, barAt, imp, bursts, T: s[5] }
+  window.frame(0)
+  return { T: s[5], s, cues, vo: vo.map((x, i) => ({ t: +(s[i] + off[i]).toFixed(3), d: x })), marks: { beatIn: s[2], beatOut: s[4] } }
+}
+
+// How each scene leaves (index = scene) and how the next one arrives.
+const CUT = ["zoom", "whipL", "whipU", "suck"]
+const leave = (k, x) => k === "zoom" ? `scale(${1 + 11 * x})` : k === "whipL" ? `translateX(${-2700 * x}px) rotate(${-5 * x}deg)` : k === "whipU" ? `translateY(${-1600 * x}px) rotate(${6 * x}deg)` : `scale(${1 - 0.75 * x})`
+const arrive = (k, v) => k === "zoom" ? `scale(${1 - 0.6 * v})` : k === "whipL" ? `translateX(${2700 * v}px) rotate(${5 * v}deg)` : k === "whipU" ? `translateY(${1600 * v}px) rotate(${-6 * v}deg)` : `scale(${1 + 2.2 * v})`
+
+function particles(t) {
+  const g = R.fx
+  g.clearRect(0, 0, 1920, 1080)
+  g.lineCap = "round"
+  for (const b of TL.bursts) {
+    const age = t - b.t
+    if (age < 0 || age > b.life + 0.2) continue
+    const r = rnd(b.seed)
+    for (let i = 0; i < b.n; i++) {
+      const ang = r() * Math.PI * 2, sp = b.sp * (0.15 + r() * r() * 1.1), life = b.life * (0.45 + 0.55 * r()), wd = 1.5 + r() * 4.5, col = R.pc[Math.floor(r() * R.pc.length)]
+      if (age > life) continue
+      const at = (a) => { const dd = (sp * (1 - Math.exp(-3.4 * a))) / 3.4; return [b.x + Math.cos(ang) * dd, b.y + Math.sin(ang) * dd * 0.8 + 240 * a * a] }
+      const [x1, y1] = at(age), [x0, y0] = at(Math.max(0, age - 0.035))
+      g.strokeStyle = `rgba(${col},${Math.pow(1 - age / life, 1.4)})`
+      g.lineWidth = wd * (1 - (age / life) * 0.6)
+      g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke()
+    }
+  }
+}
+
+window.frame = (t) => {
+  const { s, dur } = TL, P = K.p, L = K.lerp
+
+  // Impacts drive the camera shake, zoom punch, colour split and background flare together.
+  let sh = 0, zp = 0, ca = 0, amp = 0.62
+  for (const m of TL.imp) { const a = t - m.t; if (a < 0 || a > 1.8) continue; sh += m.p * Math.exp(-a * 9); zp += m.p * Math.exp(-a * 7); ca += m.p * Math.exp(-a * 8); amp += m.p * 0.75 * Math.exp(-a * 3.2) }
+  for (let i = 1; i < 5; i++) { const x = P(t, s[i] - 0.3, 0.55); if (x > 0 && x < 1) ca += Math.sin(Math.PI * x) * 1.3 }
+  R.world.style.transform = `translate(${Math.sin(t * 83) * sh * 18}px,${Math.cos(t * 97) * sh * 13}px) scale(${1 + zp * 0.04})`
+  const dx = ca * 9
+  R.world.style.filter = dx > 0.5 ? "url(#ca)" : "none"
+  $("#car").setAttribute("dx", dx); $("#cab").setAttribute("dx", -dx)
+  GL.gl.uniform1f(GL.t, t); GL.gl.uniform1f(GL.amp, amp); GL.gl.drawArrays(GL.gl.TRIANGLES, 0, 3)
+  particles(t)
+
+  R.sc.forEach((e, i) => {
+    const on = t >= s[i] && (i === 4 || t < s[i + 1])
+    e.style.display = on ? "flex" : "none"
+    if (!on) return
+    const x = i < 4 ? inExpo(P(t, s[i + 1] - 0.3, 0.3)) : 0, v = i > 0 ? 1 - K.outExpo(P(t, s[i], 0.55)) : 0
+    e.style.opacity = (1 - Math.pow(x, 3)) * (i > 0 ? P(t, s[i], 0.07) : 1)
+    e.style.transform = `scale(${1 + (0.05 * (t - s[i])) / dur[i]}) ${x > 0 ? leave(CUT[i], x) : ""} ${v > 0.0005 ? arrive(CUT[i - 1], v) : ""}`
+  })
+
+  // 1 hook: every word slams in, the wrong word glitches and gets struck out.
+  let u = t - s[0]
+  const sx = K.outExpo(P(u, TL.strikeAt, 0.3)), gl = u > TL.strikeAt - 0.05 && u < TL.strikeAt + 0.3
+  R.words.forEach((w, k) => {
+    const a = TL.wordAt[k], q = K.outExpo(P(u, a, 0.4))
+    let tr = `scale(${L(3.2, 1, q)}) rotate(${(1 - q) * (k % 2 ? 7 : -7)}deg)`
+    w.style.opacity = P(u, a, 0.06)
+    if (w === R.sw) {
+      w.style.color = `rgba(255,255,255,${L(1, 0.38, sx)})`
+      const r = rnd(Math.floor(u * 40) + 5)
+      if (gl) { tr += ` translate(${(r() - 0.5) * 44}px,${(r() - 0.5) * 12}px) skewX(${(r() - 0.5) * 30}deg)`; w.style.textShadow = `${-10 - r() * 14}px 0 rgba(255,0,180,.85),${10 + r() * 14}px 0 rgba(0,230,255,.85)` } else w.style.textShadow = "none"
+    } else w.style.backgroundPosition = `${130 - u * 70}% 0`
+    w.style.transform = tr
+  })
+  R.strike.style.transform = `scaleX(${sx})`
+
+  // 2 logo, 5 end card share the lockup move: spin in, shockwaves, light rays, lens streak, letters flip up.
+  const lock = (l, u, tl, big) => {
+    const q = K.outBack(P(u, 0.04, 0.5), 2.2), shf = K.inOut(P(u, 0.4, 0.55))
+    l.mw.style.transform = `translateX(${(1 - shf) * l.off}px)`
+    l.mark.style.transform = `scale(${Math.max(0, q)}) rotate(${(1 - q) * -200}deg)`
+    ;[l.ring, l.ring2].forEach((e, j) => { const r = P(u, 0.22 + j * 0.16, 0.9); e.style.transform = `scale(${0.95 + (3 + j * 2.2) * K.outCubic(r)})`; e.style.opacity = r > 0 && r < 1 ? (1 - r) * 0.85 : 0 })
+    l.letters.forEach((e, j) => { const a = tl + j * 0.055, z = K.outBack(P(u, a, 0.55), 1.4); e.style.opacity = P(u, a, 0.12); e.style.transform = `rotateX(${(1 - z) * -95}deg) translateY(${(1 - z) * 40}px)` })
+    l.rays.style.opacity = P(u, 0.2, 0.3) * (0.5 + 0.5 * Math.exp(-Math.max(0, u - 0.3) * 1.6)) * big
+    l.rays.style.transform = `rotate(${u * 14}deg) scale(${L(0.6, 1, K.outCubic(P(u, 0.2, 0.8)))})`
+    const f = P(u, 0.2, 0.12) * Math.exp(-Math.max(0, u - 0.32) * 3.2)
+    l.streak.style.opacity = f; l.streak.style.transform = `scaleX(${L(0.1, 1, K.outExpo(P(u, 0.2, 0.5)))}) scaleY(${1 + f * 2})`
+  }
+  const rise = (box, u, a, step) => $$(".tw", box).forEach((e, j) => { const z = K.outQuint(P(u, a + j * step, 0.5)); e.style.opacity = P(u, a + j * step, 0.18); e.style.transform = `translateY(${(1 - z) * 44}px) rotate(${(1 - z) * 6}deg)` })
+  u = t - s[1]
+  lock(R.l2, u, 0.5, 0.75)
+  rise(R.tag, u, 0.95, 0.07)
+
+  // 3 dashboard: a 3D rig that swings round, with cards floating in front of it.
+  u = t - s[2]
+  let q = K.outQuint(P(u, 0, 1.2))
+  R.orbit.style.transform = `translateY(${(1 - q) * 120}px) rotateY(${L(-38, -13, q) + (u / dur[2]) * 7}deg) rotateX(${L(20, 5, q) - (u / dur[2]) * 2}deg) scale(${L(0.8, 1, q)})`
+  R.sheen.style.transform = `translateX(${L(-500, 1400, K.inOut(P(u, 1.0, 1.1)))}px) rotate(18deg)`
+  R.lines.forEach((e, k) => { const a = TL.lineAt[k], z = K.outExpo(P(u, a, 0.45)); e.style.opacity = P(u, a, 0.06); e.style.transform = `translateX(${(1 - z) * -340}px) skewX(${(1 - z) * -18}deg) scale(${L(1.25, 1, z)})` })
+  const pulse = 0.5 + 0.5 * Math.sin(t * 7)
+  R.dot.style.boxShadow = `0 0 0 ${6 + pulse * 14}px oklch(.8 .2 150/${0.3 - pulse * 0.22}),0 0 30px oklch(.8 .2 150)`
+  if (R.liveDot) R.liveDot.style.boxShadow = `0 0 0 ${2 + pulse * 5}px oklch(.8 .2 150/${0.3 - pulse * 0.22})`
+  R.kpis.forEach(({ e, v, k }, i) => {
+    const a = TL.kpiAt[i], z = K.outBack(P(u, a, 0.5), 2)
+    e.style.opacity = P(u, a, 0.15); e.style.transform = `translateY(${(1 - z) * 40}px) scale(${L(0.7, 1, z)})`
+    v.textContent = K.fmt(k.value * K.outExpo(P(u, a + 0.1, 1.2)), k)
+  })
+  R.sats.forEach((e, i) => { const a = TL.satAt[i], z = K.outBack(P(u, a, 0.55), 2.2); e.style.opacity = P(u, a, 0.12); e.style.transform = `translateZ(${180 + i * 90}px) translateY(${(1 - z) * 70 + Math.sin(t * 2.2 + i * 2) * 8}px) scale(${L(0.5, 1, z)})` })
+  if (R.ln) {
+    const cdraw = K.inOut(P(u, 0.8, 1.6)), pt = R.ln.getPointAtLength(R.len * cdraw)
+    R.ln.style.strokeDashoffset = R.len * (1 - cdraw)
+    R.cr.setAttribute("width", pt.x)
+    for (const e of [R.pt, R.halo]) { e.setAttribute("cx", pt.x); e.setAttribute("cy", pt.y) }
+    R.pt.setAttribute("opacity", cdraw > 0.01 ? 1 : 0)
+    R.halo.setAttribute("opacity", cdraw > 0.01 ? 0.16 + pulse * 0.2 : 0)
+  }
+
+  // 4 ask: glowing border spins while the question types, the answer flips up.
+  u = t - s[3]
+  R.kick.style.opacity = P(u, 0.1, 0.25)
+  q = K.outBack(P(u, 0.08, 0.6), 1.3)
+  const glow = 0.5 + 0.5 * Math.sin(u * 6)
+  R.pill.style.opacity = P(u, 0.08, 0.15); R.pill.style.transform = `translateY(${(1 - q) * 50}px) scale(${L(0.88, 1, q)})`
+  R.pill.style.backgroundImage = `linear-gradient(rgba(16,16,30,.96),rgba(16,16,30,.96)),conic-gradient(from ${u * 260}deg,oklch(.7 .25 ${C.brand.hue}),oklch(.9 .13 ${C.brand.hue2}),#fff,oklch(.7 .25 ${C.brand.hue3}),oklch(.7 .25 ${C.brand.hue}))`
+  R.pill.style.boxShadow = `0 0 ${70 + glow * 50}px -8px oklch(.65 .25 ${C.brand.hue}),0 30px 100px -24px oklch(.65 .25 ${C.brand.hue})`
+  const typed = P(u, TL.typeAt, TL.typeDur)
+  R.typed.textContent = C.ask.q.slice(0, Math.floor(C.ask.q.length * typed))
+  R.caret.style.opacity = (typed > 0 && typed < 1) || Math.floor(u * 2.2) % 2 === 0 ? 1 : 0
+  q = K.outBack(P(u, TL.ansAt, 0.6), 1.5)
+  R.ans.style.opacity = P(u, TL.ansAt, 0.1); R.ans.style.transform = `rotateX(${(1 - q) * -72}deg) translateY(${(1 - q) * 40}px) scale(${L(0.9, 1, q)})`
+  R.bars.forEach((b, k) => { const z = K.outExpo(P(u, TL.barAt[k], 0.7)); b.fl.style.transform = `scaleX(${z})`; b.n.textContent = Math.round(b.v * z) + "%" })
+
+  // 5 end card
+  u = t - s[4]
+  lock(R.l5, u, 0.45, 1)
+  rise(R.line, u, 0.85, 0.08)
+  q = K.outBack(P(u, 1.25, 0.5), 2.4)
+  R.cta.style.opacity = P(u, 1.25, 0.1); R.cta.style.transform = `scale(${L(0.6, 1, q)})`
+  R.cta.style.boxShadow = `0 0 ${70 + pulse * 50}px 0 oklch(.65 .25 ${C.brand.hue}),0 20px 80px -6px oklch(.65 .25 ${C.brand.hue})`
+  R.shine.style.transform = `translateX(${L(-200, 900, K.inOut(P(u, 1.7, 0.7)))}px) skewX(-20deg)`
+  $("#fade").style.opacity = P(t, TL.T - 0.3, 0.3)
+}
+</script>
+</body>
+</html>

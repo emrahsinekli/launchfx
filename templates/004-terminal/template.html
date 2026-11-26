@@ -1,0 +1,295 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>004 Terminal</title>
+<style>
+@font-face{font-family:Mono;src:url(/fonts/mono.woff2);font-weight:100 800}
+@font-face{font-family:Sans;src:url(/fonts/sans.woff2);font-weight:100 900}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#04070a}
+#stage{position:absolute;inset:0;overflow:hidden;font-family:Mono,monospace;color:var(--tx);--h1:155;--bg:#04070a;--tx:#d5e2dc;--mute:#6f8279;--ac:oklch(.86 .21 var(--h1));--acd:oklch(.45 .12 var(--h1));--red:oklch(.68 .2 25);--panel:#0a1014;--line:rgba(160,220,200,.14)}
+#grid{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:60px 60px;-webkit-mask-image:radial-gradient(ellipse 75% 70% at 50% 50%,#000 0,transparent 80%);opacity:.5}
+#fxc{position:absolute;inset:0;width:1920px;height:1080px;opacity:.5}
+#world{position:absolute;inset:0}
+.scene{position:absolute;inset:0;display:none}
+#scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.28) 2px 4px);pointer-events:none}
+#sweep{position:absolute;left:0;right:0;top:0;height:160px;background:linear-gradient(180deg,transparent,oklch(.86 .21 var(--h1)/.1),transparent)}
+#vig{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(0,0,0,.7) 100%)}
+#gb{position:absolute;inset:0}
+#gb i{position:absolute;left:0;right:0;display:none}
+#fade{position:absolute;inset:0;background:#000;opacity:0}
+.ac{color:var(--ac)}
+.caret{display:inline-block;width:.58em;height:1.05em;background:var(--ac);vertical-align:-.16em;margin-left:.08em;box-shadow:0 0 18px var(--ac)}
+.panel{position:absolute;background:var(--panel);border:1px solid rgba(160,220,200,.22);border-radius:18px;box-shadow:0 50px 120px -30px #000,0 0 90px -30px var(--ac);overflow:hidden}
+.pbar{height:54px;display:flex;align-items:center;gap:10px;padding:0 20px;border-bottom:1px solid rgba(160,220,200,.14);font-size:20px;color:var(--mute)}
+.pbar i{width:13px;height:13px;border-radius:50%;background:#24323a}
+.pbar span{margin-left:14px}
+
+/* 1 terminal */
+.hd{position:absolute;left:0;right:0;top:200px;text-align:center;font-size:92px;font-weight:800;letter-spacing:-.04em;white-space:pre;color:#fff}
+#term{left:210px;top:400px;width:1500px}
+.tb{padding:40px 48px 48px;font-size:44px;line-height:1.75;white-space:pre}
+.tb .o{display:block;color:var(--tx)}
+.tb .o b{color:var(--ac);font-weight:700}
+
+/* 2 boot */
+.boot{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.bn{font-size:250px;font-weight:800;letter-spacing:-.06em;line-height:1;color:var(--ac);text-shadow:0 0 60px oklch(.86 .21 var(--h1)/.55);white-space:pre}
+.bt{font-size:46px;margin-top:34px;color:var(--tx);white-space:pre;height:1.3em}
+.bk{position:absolute;width:90px;height:90px;border:6px solid var(--ac)}
+
+/* 3 diff */
+#ed{left:120px;top:50%;width:1080px}
+.code{padding:26px 0;font-size:30px}
+.ln{display:flex;height:54px;line-height:54px;white-space:pre;overflow:hidden}
+.ln u{text-decoration:none;width:84px;text-align:right;color:#3d4f58;padding-right:22px;flex:none}
+.ln s{text-decoration:none;width:44px;flex:none;font-weight:800}
+.ln.r{background:oklch(.4 .15 25/.28);color:oklch(.82 .1 25)}
+.ln.r s{color:var(--red)}
+.ln.a{background:oklch(.5 .16 var(--h1)/.24);color:oklch(.93 .1 var(--h1))}
+.ln.a s{color:var(--ac)}
+.dc{position:absolute;left:1280px;top:0;bottom:0;right:80px;display:flex;flex-direction:column;justify-content:center}
+.d1{font-size:54px;font-weight:700;color:var(--mute);position:relative;width:max-content;white-space:pre}
+.d1 i{position:absolute;left:-8px;right:-8px;top:50%;height:6px;background:var(--red);transform-origin:0 50%}
+.d2{font-size:118px;font-weight:800;letter-spacing:-.05em;line-height:1.05;color:var(--ac);margin-top:26px;text-shadow:0 0 50px oklch(.86 .21 var(--h1)/.5);white-space:pre}
+
+/* 4 bench */
+.bh{position:absolute;left:140px;top:110px;font-size:78px;font-weight:800;letter-spacing:-.04em;white-space:pre}
+.bnote{position:absolute;left:144px;top:214px;font-size:26px;color:var(--mute);white-space:pre}
+.brow{position:absolute;left:140px;right:140px;height:150px;display:flex;align-items:center;gap:36px}
+.brow .bl{width:400px;font-size:42px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:clip;flex:none}
+.brow .tr{flex:1;height:70px;position:relative}
+.brow .fl{position:absolute;left:0;top:0;bottom:0;background:#26343b;transform-origin:0 50%;border-radius:6px}
+.brow.us .fl{background:var(--ac);box-shadow:0 0 50px var(--ac)}
+.brow .bv{position:absolute;top:0;height:70px;line-height:70px;font-size:54px;font-weight:800;white-space:nowrap}
+.brow.us .bl,.brow.us .bv{color:var(--ac)}
+
+/* 5 end */
+.en{font-size:210px;font-weight:800;letter-spacing:-.06em;line-height:1;color:var(--ac);text-shadow:0 0 60px oklch(.86 .21 var(--h1)/.55);white-space:pre}
+.el{font-size:54px;font-weight:600;margin-top:26px;white-space:pre}
+.inst{margin-top:54px;font-size:46px;font-weight:600;padding:30px 48px;border:3px solid var(--ac);border-radius:18px;background:rgba(10,16,20,.9);box-shadow:0 0 80px -10px var(--ac),inset 0 0 40px -20px var(--ac);white-space:pre}
+.inst span{color:var(--mute)}
+.eu{font-size:34px;color:var(--mute);margin-top:34px;white-space:pre}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><filter id="ca" x="-3%" y="-3%" width="106%" height="106%" color-interpolation-filters="sRGB">
+  <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/><feOffset id="car" in="r" dx="0" result="ro"/>
+  <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="gg"/>
+  <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b"/><feOffset id="cab" in="b" dx="0" result="bo"/>
+  <feBlend in="ro" in2="gg" mode="screen" result="rg"/><feBlend in="rg" in2="bo" mode="screen"/>
+</filter></svg>
+<div id="stage">
+  <div id="grid"></div>
+  <canvas id="fxc" width="1920" height="1080"></canvas>
+  <div id="world">
+    <div class="scene" id="s1"></div>
+    <div class="scene" id="s2"></div>
+    <div class="scene" id="s3"></div>
+    <div class="scene" id="s4"></div>
+    <div class="scene" id="s5"></div>
+  </div>
+  <div id="sweep"></div>
+  <div id="gb"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div id="scan"></div>
+  <div id="vig"></div>
+  <div id="fade"></div>
+</div>
+<script src="/engine/kit.js"></script>
+<script>
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)]
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e }
+const GLYPH = "01<>/\\[]{}#$%&*+=_ABCDEFXYZ"
+let C, TL, R = {}
+// Text that decodes out of random glyphs, left to right. p runs 0..1.
+const scr = (text, p, t) => { if (p >= 1) return text; const n = text.length, r = K.rnd(Math.floor(t * 30) * 31 + n); let o = ""; for (let i = 0; i < n; i++) { const x = i / n, g = GLYPH[Math.floor(r() * GLYPH.length)]; o += text[i] === " " ? " " : x < p * 1.25 - 0.25 ? text[i] : x < p * 1.25 ? g : " " } return o }
+const typed = (text, p) => text.slice(0, Math.floor(text.length * K.clamp(p)))
+const panel = (id, title) => { const p = el("div", "panel"); p.id = id; const b = el("div", "pbar"); b.append(el("i"), el("i"), el("i"), el("span", null, title)); p.append(b); return p }
+
+window.setup = (c, vo) => {
+  C = c
+  const b = K.brand(c.brand)
+  $("#stage").style.setProperty("--h1", b.hue)
+  R.ac = `oklch(.86 .21 ${b.hue})`; R.acRgb = K.rgb(R.ac).map((v) => Math.round(v * 255)).join(",")
+  R.sc = $$(".scene"); R.fx = $("#fxc").getContext("2d"); R.gb = $$("#gb i")
+
+  // 1 terminal
+  R.hd = el("div", "hd"); R.term = panel("term", c.term.title)
+  const tb = el("div", "tb"); R.cmd = el("span"); R.car1 = el("span", "caret")
+  const l1 = el("span", "o"); const pr = el("b", null, "$ "); l1.append(pr, R.cmd, R.car1); tb.append(l1)
+  R.outs = c.term.output.slice(0, 4).map((t) => { const o = el("span", "o"), k = el("b", null, "✓ "); o.append(k, document.createTextNode(t)); tb.append(o); return o })
+  R.term.append(tb); $("#s1").append(R.hd, R.term)
+
+  // 2 boot
+  const boot = el("div", "boot"); R.bn = el("div", "bn", b.name); R.bt = el("div", "bt"); boot.append(R.bn, R.bt); $("#s2").append(boot)
+  R.bk = [0, 1, 2, 3].map((i) => { const e = el("div", "bk"); e.style.borderWidth = ["6px 0 0 6px", "6px 6px 0 0", "0 0 6px 6px", "0 6px 6px 0"][i]; $("#s2").append(e); return e })
+
+  // 3 diff
+  R.ed = panel("ed", c.diff.file); const code = el("div", "code")
+  let no = 1
+  const line = (t, cls, sign) => { const l = el("div", "ln " + cls); l.append(el("u", null, String(no++)), el("s", null, sign), document.createTextNode(t)); code.append(l); return l }
+  R.ctx0 = (c.diff.before ?? []).slice(0, 2).map((t) => line(t, "", " "))
+  R.rem = c.diff.remove.slice(0, 7).map((t) => line(t, "r", "-"))
+  R.add = c.diff.add.slice(0, 3).map((t) => line(t, "a", "+"))
+  R.ctx1 = (c.diff.after ?? []).slice(0, 2).map((t) => line(t, "", " "))
+  R.ed.append(code)
+  const dc = el("div", "dc"); R.d1 = el("div", "d1", c.diff.caption[0]); R.d1x = el("i"); R.d1.append(R.d1x); R.d2 = el("div", "d2"); dc.append(R.d1, R.d2)
+  $("#s3").append(R.ed, dc)
+
+  // 4 bench: bars are to scale; a very small value still gets a visible sliver
+  R.bh = el("div", "bh"); R.bnote = el("div", "bnote", c.bench.note ?? ""); $("#s4").append(R.bh, R.bnote)
+  const rows = c.bench.rows.slice(0, 3), mx = Math.max(...rows.map((r) => r.value))
+  R.rows = rows.map((r, i) => {
+    const e = el("div", "brow" + (r.us ? " us" : "")), tr = el("div", "tr"), fl = el("div", "fl"), bv = el("div", "bv")
+    const w = Math.max(0.025, r.value / mx) * 0.78
+    e.style.top = 330 + i * 190 + "px"; fl.style.width = w * 100 + "%"; tr.append(fl, bv); e.append(el("div", "bl", r.label), tr); $("#s4").append(e)
+    return { e, fl, bv, r, w }
+  })
+
+  // 5 end
+  const end = el("div", "boot"); R.en = el("div", "en", b.name); R.el = el("div", "el"); R.inst = el("div", "inst"); R.ins = el("b"); R.car5 = el("span", "caret")
+  R.inst.append(el("span", null, "$ "), R.ins, R.car5); R.eu = el("div", "eu", b.url); end.append(R.en, R.el, R.inst, R.eu); $("#s5").append(end)
+
+  // Measure with everything laid out and the full text in place.
+  R.sc.forEach((e) => (e.style.display = "block"))
+  R.hd.textContent = c.hook; K.fit(R.hd, 1760); R.hd.textContent = ""
+  R.cmd.textContent = c.term.command; K.fit($(".tb", R.term), 1500)
+  const tbw = Math.max(...$$(".o", R.term).map((o) => { const r = document.createRange(); r.selectNodeContents(o); return r.getBoundingClientRect().width }))
+  if (tbw > 1390) $(".tb", R.term).style.fontSize = (44 * 1390) / tbw + "px"
+  R.cmd.textContent = ""
+  K.fit(R.bn, 1500); R.bt.textContent = c.tagline; K.fit(R.bt, 1700); R.bt.textContent = ""
+  const cw = Math.max(...$$(".ln", R.ed).map((l) => l.scrollWidth)); if (cw > 1060) $(".code", R.ed).style.fontSize = (30 * 1050) / cw + "px"
+  K.fit(R.d1, 540); R.d2.textContent = c.diff.caption[1]; K.fit(R.d2, 560); R.d2.textContent = ""
+  R.bh.textContent = c.bench.title; K.fit(R.bh, 1600); R.bh.textContent = ""
+  K.fit(R.en, 1500); R.el.textContent = c.end.line; K.fit(R.el, 1700); R.el.textContent = ""
+  R.ins.textContent = c.end.install; K.fit(R.inst, 1600); R.inst.style.width = R.inst.offsetWidth + 40 + "px"; R.ins.textContent = ""
+  const br = R.bn.getBoundingClientRect()
+  R.bkPos = [[br.left - 70, br.top - 40], [br.right - 20, br.top - 40], [br.left - 70, br.bottom - 50], [br.right - 20, br.bottom - 50]]
+  R.bn.textContent = ""; R.en.textContent = ""
+
+  const G = 0.5, off = [0.25, 0.45, 0.5, 0.45, 0.5]
+  const { s, dur } = K.timeline(vo, [3, 2, 4, 3, 3], off, [0.4, 0.3, 0.4, 0.4, 0.95], G)
+  const cues = [], imp = []
+  const cue = (t, k, o = {}) => cues.push({ t: +t.toFixed(3), k, ...o })
+  const hit = (t, p) => imp.push({ t, p })
+  const cmdAt = 0.55, cmdDur = Math.min(0.9, c.term.command.length * 0.04), outAt = R.outs.map((_, k) => cmdAt + cmdDur + 0.25 + k * 0.22)
+  cue(0.05, "glitch")
+  for (let i = 0; i < c.term.command.length; i++) if (c.term.command[i] !== " ") cue(cmdAt + (i / c.term.command.length) * cmdDur, "key")
+  cue(cmdAt + cmdDur + 0.08, "click"); outAt.forEach((a, k) => cue(a, "blip", { i: k }))
+  for (let i = 1; i < 5; i++) { cue(s[i] - 0.1, "glitch"); cue(s[i] - 0.28, "whoosh"); hit(s[i], 0.6) }
+  cue(s[1] + 0.2, "impact"); cue(s[1] + 0.5, "shimmer"); hit(s[1] + 0.22, 0.9)
+  for (let i = 0; i < c.tagline.length; i += 2) cue(s[1] + 0.8 + (i / c.tagline.length) * 0.7, "key")
+  const remAt = R.rem.map((_, k) => 0.25 + k * 0.07), colAt = 1.7, addAt = R.add.map((_, k) => colAt + 0.35 + k * 0.15)
+  remAt.forEach((a, k) => cue(s[2] + a, "tick", { i: k })); cue(s[2] + colAt, "swish"); cue(s[2] + colAt, "glitch")
+  addAt.forEach((a, k) => { cue(s[2] + a, "blip", { i: k + 2 }); cue(s[2] + a, "pop") }); hit(s[2] + colAt + 0.4, 0.7)
+  const barAt = R.rows.map((_, k) => 0.35 + k * 0.18)
+  barAt.forEach((a, k) => { cue(s[3] + a, "draw", { d: 0.8 }); cue(s[3] + a + 0.85, "blip", { i: k + 1 }) }); hit(s[3] + 1.3, 0.4)
+  cue(s[4] - 0.9, "riser", { d: 0.9 }); cue(s[4] + 0.05, "boom"); cue(s[4] + 0.35, "chime"); hit(s[4] + 0.08, 1.2)
+  for (let i = 0; i < c.end.install.length; i++) if (c.end.install[i] !== " ") cue(s[4] + 1.25 + (i / c.end.install.length) * 0.7, "key")
+  TL = { s, dur, off, cmdAt, cmdDur, outAt, remAt, colAt, addAt, barAt, imp, T: s[5] }
+  window.frame(0)
+  return { T: s[5], s, cues, vo: vo.map((x, i) => ({ t: +(s[i] + off[i]).toFixed(3), d: x })), marks: { beatIn: s[1], beatOut: s[4] }, audio: { bpm: 120, style: "pulse" }, post: { bloom: 0.42, grain: 8 } }
+}
+
+// Falling glyph columns behind the logo scenes.
+function rain(t, amount) {
+  const g = R.fx
+  g.clearRect(0, 0, 1920, 1080)
+  if (amount <= 0) return
+  g.font = "600 26px Mono"; g.textBaseline = "top"
+  const r = K.rnd(99)
+  for (let col = 0; col < 48; col++) {
+    const x = col * 40 + 6, speed = 260 + r() * 520, len = 8 + Math.floor(r() * 16), start = r() * 1600
+    const head = ((t * speed + start) % 1900) - 300
+    for (let j = 0; j < len; j++) {
+      const y = head - j * 32
+      if (y < -30 || y > 1080) continue
+      const ch = GLYPH[Math.floor(K.rnd(col * 131 + j * 17 + Math.floor(t * 12 + j))() * GLYPH.length)]
+      g.fillStyle = j === 0 ? `rgba(255,255,255,${0.9 * amount})` : `rgba(${R.acRgb},${(1 - j / len) * 0.55 * amount})`
+      g.fillText(ch, x, y)
+    }
+  }
+}
+
+window.frame = (t) => {
+  const { s, dur } = TL, P = K.p, L = K.lerp
+  let sh = 0, zp = 0, ca = 0
+  for (const m of TL.imp) { const a = t - m.t; if (a < 0 || a > 1.4) continue; sh += m.p * Math.exp(-a * 11); zp += m.p * Math.exp(-a * 8); ca += m.p * Math.exp(-a * 9) }
+  // Glitch cut: for a moment around every cut the picture tears into bars and splits its colours.
+  let gl = 0
+  for (let i = 1; i < 5; i++) { const d = Math.abs(t - s[i]); if (d < 0.13) gl = 1 - d / 0.13 }
+  if (t < 0.18) gl = Math.max(gl, 1 - t / 0.18)
+  const gr = K.rnd(Math.floor(t * 30) * 7 + 3)
+  R.gb.forEach((e) => {
+    const on = gl > 0 && gr() < 0.75
+    e.style.display = on ? "block" : "none"
+    if (!on) return
+    e.style.top = gr() * 1000 + "px"; e.style.height = 8 + gr() * 90 * gl + "px"
+    e.style.background = gr() < 0.5 ? R.ac : "#fff"; e.style.opacity = 0.25 + gr() * 0.6; e.style.mixBlendMode = gr() < 0.5 ? "difference" : "normal"
+    e.style.transform = `translateX(${(gr() - 0.5) * 600}px)`
+  })
+  const world = $("#world")
+  world.style.transform = `translate(${Math.sin(t * 88) * sh * 16 + (gl ? (gr() - 0.5) * 70 * gl : 0)}px,${Math.cos(t * 101) * sh * 11}px) scale(${1 + zp * 0.03})`
+  const dx = (ca + gl * 1.6) * 8
+  world.style.filter = dx > 0.5 ? "url(#ca)" : "none"; $("#car").setAttribute("dx", dx); $("#cab").setAttribute("dx", -dx)
+  $("#sweep").style.transform = `translateY(${((t * 420) % 1400) - 200}px)`
+  $("#grid").style.transform = `translateY(${(t * 14) % 60}px)`
+  R.sc.forEach((e, i) => { e.style.display = t >= s[i] && (i === 4 || t < s[i + 1]) ? "block" : "none" })
+  const inLogo = (t >= s[1] && t < s[2]) || t >= s[4]
+  rain(t, inLogo ? 1 : 0)
+  const blink = Math.floor(t * 2.5) % 2 === 0
+
+  // 1 terminal
+  let u = t - s[0]
+  R.hd.textContent = scr(C.hook, P(u, 0.1, 0.9), t)
+  let q = K.outExpo(P(u, 0.05, 0.7))
+  R.term.style.opacity = P(u, 0.05, 0.12); R.term.style.transform = `translateY(${(1 - q) * 160}px) scale(${L(0.92, 1, q)})`
+  const ty = P(u, TL.cmdAt, TL.cmdDur)
+  R.cmd.textContent = typed(C.term.command, ty)
+  R.car1.style.opacity = (ty > 0 && ty < 1) || blink ? 1 : 0
+  R.outs.forEach((o, k) => { const a = TL.outAt[k]; o.style.opacity = P(u, a, 0.06); o.style.transform = `translateX(${(1 - K.outExpo(P(u, a, 0.3))) * -30}px)` })
+
+  // 2 boot: the name decodes out of noise inside corner brackets
+  u = t - s[1]
+  R.bn.textContent = scr(C.brand.name, P(u, 0.08, 0.75), t)
+  R.bn.style.transform = `scale(${L(1.25, 1, K.outExpo(P(u, 0.05, 0.5)))})`
+  const bt = P(u, 0.8, 0.7)
+  R.bt.textContent = typed(C.tagline, bt) + (bt < 1 || blink ? "█" : "")
+  R.bk.forEach((e, i) => { const z = K.outExpo(P(u, 0.1 + i * 0.04, 0.5)), [x, y] = R.bkPos[i], ox = (i % 2 ? 1 : -1) * 260, oy = (i < 2 ? -1 : 1) * 180; e.style.opacity = P(u, 0.1, 0.1); e.style.transform = `translate(${x + ox * (1 - z)}px,${y + oy * (1 - z)}px)` })
+
+  // 3 diff: the old lines collapse, the new ones open in their place
+  u = t - s[2]
+  q = K.outExpo(P(u, 0.05, 0.7))
+  R.ed.style.opacity = P(u, 0.05, 0.12); R.ed.style.transform = `translate(${(1 - q) * -200}px,-50%)`
+  const cz = K.inOut(P(u, TL.colAt, 0.45))
+  R.rem.forEach((l, k) => { const a = TL.remAt[k]; l.style.opacity = P(u, a, 0.05) * (1 - cz); l.style.height = 54 * (1 - cz) + "px"; l.style.transform = `translateX(${(1 - K.outExpo(P(u, a, 0.3))) * -40 + cz * 60}px)` })
+  R.add.forEach((l, k) => { const a = TL.addAt[k], z = K.outExpo(P(u, a, 0.35)), f = P(u, a, 0.7); l.style.height = 54 * z + "px"; l.style.opacity = P(u, a, 0.05); l.style.filter = f > 0 && f < 1 ? `brightness(${1 + (1 - f) * 1.4})` : "none" })
+  R.d1.style.opacity = P(u, 0.5, 0.2) * L(1, 0.5, cz); R.d1x.style.transform = `scaleX(${K.outExpo(P(u, TL.colAt, 0.35))})`
+  R.d2.textContent = scr(C.diff.caption[1], P(u, TL.colAt + 0.3, 0.6), t)
+
+  // 4 bench
+  u = t - s[3]
+  R.bh.textContent = scr(C.bench.title, P(u, 0.05, 0.6), t)
+  R.bnote.style.opacity = P(u, 0.5, 0.3)
+  R.rows.forEach(({ e, fl, bv, r, w }, k) => {
+    const a = TL.barAt[k], z = K.outExpo(P(u, a, 0.9))
+    e.style.opacity = P(u, a - 0.1, 0.1); fl.style.transform = `scaleX(${z})`
+    bv.style.left = `calc(${w * z * 100}% + 24px)`; bv.textContent = K.fmt(r.value * z, r)
+  })
+
+  // 5 end
+  u = t - s[4]
+  R.en.textContent = scr(C.brand.name, P(u, 0.05, 0.6), t)
+  R.en.style.transform = `scale(${L(1.4, 1, K.outExpo(P(u, 0.03, 0.5)))})`
+  R.el.textContent = scr(C.end.line, P(u, 0.7, 0.5), t)
+  q = K.outBack(P(u, 1.1, 0.45), 2)
+  R.inst.style.opacity = P(u, 1.1, 0.08); R.inst.style.transform = `scale(${L(0.7, 1, q)})`
+  const it = P(u, 1.25, 0.7)
+  R.ins.textContent = typed(C.end.install, it); R.car5.style.opacity = (it > 0 && it < 1) || blink ? 1 : 0
+  R.eu.style.opacity = P(u, 2.0, 0.3)
+  $("#fade").style.opacity = P(t, TL.T - 0.3, 0.3)
+}
+</script>
+</body>
+</html>

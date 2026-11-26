@@ -1,0 +1,35 @@
+{
+  "brand": { "name": "Portside", "url": "portside.example", "color": "#22e39a" },
+  "hook": "Deploys that take seconds.",
+  "term": {
+    "title": "zsh  ~/my-app",
+    "command": "npx portside deploy",
+    "output": ["Built in 1.8s", "42 routes optimized", "Live at portside.example/my-app"]
+  },
+  "tagline": "Push code. It is live.",
+  "diff": {
+    "file": "deploy.yml",
+    "before": ["name: deploy"],
+    "remove": ["  build:", "    runs-on: ubuntu-latest", "    steps:", "      - uses: actions/checkout", "      - run: npm ci && npm run build", "      - run: ./scripts/upload.sh", "      - run: ./scripts/invalidate.sh"],
+    "add": ["  deploy:", "    uses: portside/deploy"],
+    "caption": ["40 lines of config", "become 2."]
+  },
+  "bench": {
+    "title": "Push to live",
+    "note": "Sample figures, lower is better",
+    "rows": [
+      { "label": "Portside", "value": 8, "suffix": " s", "us": true },
+      { "label": "Typical CI", "value": 240, "suffix": " s" },
+      { "label": "By hand", "value": 900, "suffix": " s" }
+    ]
+  },
+  "end": { "line": "Ship in seconds.", "install": "npm i -g portside" },
+  "voice": { "engine": "kokoro", "name": "am_michael", "speed": 1.08, "lang": "en-us" },
+  "vo": [
+    "Deploys that take seconds.",
+    "This is Portside.",
+    "Forty lines of config become two.",
+    "Eight seconds, from push to live.",
+    "Portside. Ship in seconds."
+  ]
+}

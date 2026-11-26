@@ -1,0 +1,31 @@
+{
+  "brand": { "name": "Stride", "url": "stride.example", "color": "#7c4dff" },
+  "hook": ["Good habits,", "in your pocket."],
+  "hero": {
+    "title": "One tap to check in.",
+    "screen": 2,
+    "chips": ["7-day streak", "Morning run done", "3 habits left"]
+  },
+  "screens": [
+    { "kind": "ring", "heading": "Today", "sub": "Wednesday", "title": "See today at a glance", "value": 72, "items": ["Morning run", "Read 20 pages", "Drink water"] },
+    { "kind": "bars", "heading": "This week", "sub": "Check-ins", "title": "Watch the week add up", "big": 36, "label": "check-ins so far", "values": [3, 5, 4, 6, 5, 7, 6] },
+    { "kind": "list", "heading": "Habits", "sub": "4 for today", "title": "Tick it off in one tap", "items": ["Morning run", "Read 20 pages", "Drink water", "Stretch"], "done": 3, "button": "New habit" }
+  ],
+  "notify": {
+    "title": "Gentle nudges, right on time.",
+    "items": [
+      { "title": "Time for your run", "text": "You are on a 7-day streak" },
+      { "title": "Almost there", "text": "One habit left today" },
+      { "title": "Week complete", "text": "7 of 7 days. Nicely done." }
+    ]
+  },
+  "end": { "line": "Build the habit.", "cta": "Get the app" },
+  "voice": { "engine": "kokoro", "name": "af_heart", "speed": 1.12, "lang": "en-us" },
+  "vo": [
+    "Good habits, in your pocket.",
+    "Check in with a single tap.",
+    "See your day, your week, and every streak.",
+    "With gentle nudges, right on time.",
+    "Stride. Build the habit."
+  ]
+}

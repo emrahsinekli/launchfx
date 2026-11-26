@@ -1,0 +1,43 @@
+{
+  "brand": { "name": "Lumen", "url": "lumen.example", "hue": 268, "hue2": 200, "hue3": 330 },
+  "hook": ["Stop guessing", "what's working."],
+  "strike": "guessing",
+  "tagline": "Product analytics, finally clear.",
+  "dash": {
+    "lines": ["Every signup.", "Every dollar.", "Live."],
+    "title": "Overview",
+    "chartTitle": "Signups, last 30 days",
+    "kpis": [
+      { "label": "Signups", "value": 12480, "delta": "+18%" },
+      { "label": "MRR", "value": 84.2, "prefix": "$", "suffix": "k", "dec": 1, "delta": "+9%" },
+      { "label": "Activation", "value": 61, "suffix": "%", "delta": "+4%" }
+    ],
+    "sats": [
+      { "title": "New signup", "sub": "2 seconds ago" },
+      { "title": "Revenue goal", "sub": "84% reached" }
+    ],
+    "series": [18, 22, 20, 27, 25, 33, 31, 40, 38, 47, 52, 49, 61, 66, 74, 71, 86, 94]
+  },
+  "ask": {
+    "kicker": "Ask Lumen",
+    "q": "Which channel brings the most paid users?",
+    "label": "Answer",
+    "a": "Organic search",
+    "detail": "42% of paid conversions this month",
+    "bars": [
+      { "l": "Organic", "v": 42 },
+      { "l": "Referral", "v": 27 },
+      { "l": "Paid ads", "v": 19 },
+      { "l": "Social", "v": 12 }
+    ]
+  },
+  "end": { "line": "Know your numbers.", "cta": "Start free" },
+  "voice": { "engine": "kokoro", "name": "am_michael", "speed": 1.05, "lang": "en-us" },
+  "vo": [
+    "Stop guessing what's working.",
+    "Meet Lumen.",
+    "Every signup, every dollar, live.",
+    "Ask anything. Get the answer in seconds.",
+    "Lumen. Know your numbers."
+  ]
+}
