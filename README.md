@@ -31,6 +31,14 @@ The agent runs the setup, reads your site, writes the content, shows you a previ
 
 Developed and tested on Windows. macOS and Linux have had less testing: please open an issue if something breaks.
 
+## Studio
+
+```
+node engine/studio.mjs
+```
+
+Opens a page in your browser: the video plays with voice, music and effects before anything is rendered, every word, number and colour is a field you can change, and the render starts with a button.
+
 ## By hand
 
 ```
@@ -39,7 +47,7 @@ node engine/brand.mjs https://yoursite.com
 node engine/make.mjs 001-aurora templates/001-aurora/content.json --draft
 ```
 
-`brand.mjs` opens your real site and saves your name, tagline, brand colours, logo, the numbers on your page and screenshots into `projects/<name>/`. Copy a template's `content.json` there, change the values (each template has a `GUIDE.md`), and run `make.mjs` on your copy. Drop `--draft` for the final 60 fps render with motion blur. Add `--social` to also get a vertical (9:16) and a square (1:1) version with word-by-word captions.
+`brand.mjs` opens your real site and saves your name, tagline, brand colours, logo, the numbers on your page and screenshots and a recording of the page scrolling into `projects/<name>/`. Copy a template's `content.json` there, change the values (each template has a `GUIDE.md`), and run `make.mjs` on your copy. Drop `--draft` for the final 60 fps render with motion blur. Add `--social` to also get a vertical (9:16) and a square (1:1) version with word-by-word captions.
 
 ## How it works
 

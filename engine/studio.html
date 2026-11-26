@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LaunchFX Studio</title>
+<style>
+@font-face{font-family:Disp;src:url(/fonts/display.woff2)}
+@font-face{font-family:Sans;src:url(/fonts/sans.woff2)}
+@font-face{font-family:Mono;src:url(/fonts/mono.woff2)}
+:root{--bg:#0a0b10;--panel:#12141c;--line:#232634;--ink:#eef0f6;--dim:#8c92a6;--hot:#5b7cff;--ok:#2fd18a;--warn:#ffb648}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 Sans,system-ui,sans-serif;display:grid;grid-template-rows:56px 1fr;overflow:hidden}
+button,select,input,textarea{font:inherit;color:inherit}
+header{display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid var(--line)}
+header b{font:800 18px Disp,sans-serif;letter-spacing:-.02em;margin-right:8px}
+header .sp{flex:1}
+select,input[type=text],input[type=number],textarea{background:#0d0f16;border:1px solid var(--line);border-radius:8px;padding:7px 10px;outline:none;width:100%}
+select{width:auto}
+textarea{resize:vertical;min-height:58px}
+select:focus,input:focus,textarea:focus{border-color:var(--hot)}
+.btn{background:#1a1d29;border:1px solid var(--line);border-radius:8px;padding:7px 13px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:#3a3f55}
+.btn.go{background:var(--hot);border-color:var(--hot);font-weight:600}
+.btn.warn{background:var(--warn);border-color:var(--warn);color:#1a1200;font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+main{display:grid;grid-template-columns:minmax(0,1fr) 400px;min-height:0}
+#stage{display:flex;flex-direction:column;padding:18px;gap:12px;min-width:0;min-height:0}
+#view{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+#box{position:relative;background:#000;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+#box iframe{position:absolute;left:0;top:0;width:1920px;height:1080px;border:0;transform-origin:0 0;pointer-events:none}
+#empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);text-align:center;padding:20px}
+#empty[hidden]{display:none}
+#bar{display:flex;align-items:center;gap:12px}
+#play{width:44px;height:36px;font-size:15px;padding:0}
+#time{font:13px Mono,monospace;color:var(--dim);min-width:92px}
+#track{position:relative;flex:1;height:36px;cursor:pointer}
+#track i{position:absolute;left:0;right:0;top:16px;height:4px;border-radius:2px;background:var(--line)}
+#track u{position:absolute;left:0;top:16px;height:4px;border-radius:2px;background:var(--hot)}
+#track s{position:absolute;top:10px;width:2px;height:16px;background:#3a3f55}
+#track em{position:absolute;top:11px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#fff}
+#note{color:var(--dim);font-size:13px;min-height:20px;white-space:pre-wrap}
+#note.bad{color:#ff7a7a}
+aside{border-left:1px solid var(--line);background:var(--panel);overflow-y:auto;padding:14px 16px 60px}
+aside h3{font:700 12px Sans,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:18px 0 8px}
+aside h3:first-child{margin-top:4px}
+.f{margin-bottom:9px}
+.f label{display:block;font-size:12px;color:var(--dim);margin-bottom:3px}
+.grp{border-left:2px solid var(--line);padding-left:10px;margin:6px 0 12px}
+.col{display:flex;gap:8px}
+.col input[type=color]{width:44px;height:35px;padding:2px;background:#0d0f16;border:1px solid var(--line);border-radius:8px}
+.row{display:flex;gap:8px;align-items:center}
+dialog{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:22px;width:min(520px,92vw)}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog h2{font:800 20px Disp,sans-serif;margin-bottom:12px}
+dialog p{color:var(--dim);margin-bottom:12px}
+dialog .row{margin-top:14px;justify-content:flex-end}
+#log{font:12px/1.5 Mono,monospace;color:var(--dim);background:#0d0f16;border:1px solid var(--line);border-radius:8px;padding:10px;height:150px;overflow:auto;white-space:pre-wrap}
+#files a{display:block;color:var(--hot);margin-top:8px}
+video{width:100%;border-radius:8px;margin-top:10px;background:#000;max-height:50vh}
+@media (max-width:900px){body{overflow:auto;display:block}main{display:block}#view{aspect-ratio:16/9}aside{border-left:0;border-top:1px solid var(--line)}header{flex-wrap:wrap;height:auto;padding:10px 16px}}
+</style>
+<header>
+  <b>LaunchFX Studio</b>
+  <select id="proj" title="Project"></select>
+  <button class="btn" id="new">New</button>
+  <span class="sp"></span>
+  <button class="btn warn" id="sound" hidden>Update voice and sound</button>
+  <button class="btn" id="site">Read my site</button>
+  <button class="btn" id="draft">Quick render</button>
+  <button class="btn go" id="final">Final render</button>
+</header>
+<main>
+  <section id="stage">
+    <div id="view"><div id="box"><iframe id="fr" title="Preview"></iframe><div id="empty">Pick a project, or press New.</div></div></div>
+    <div id="bar">
+      <button class="btn" id="play" title="Play / pause (space)">▶</button>
+      <span id="time">0.0 / 0.0 s</span>
+      <div id="track"><i></i><u></u><em></em></div>
+    </div>
+    <div id="note"></div>
+  </section>
+  <aside id="form"></aside>
+</main>
+<audio id="au" preload="auto"></audio>
+
+<dialog id="dNew"><h2>New video</h2>
+  <div class="f"><label>Template</label><select id="nTpl" style="width:100%"></select></div>
+  <div class="f"><label>Project name (lower-case letters, digits, dashes)</label><input type="text" id="nName" placeholder="my-product"></div>
+  <div class="row"><button class="btn" data-x>Cancel</button><button class="btn go" id="nGo">Create</button></div>
+</dialog>
+<dialog id="dSite"><h2>Read my site</h2>
+  <p>Opens your real website and collects the name, brand colour, logo, screenshots and a recording of the page scrolling. Takes about a minute.</p>
+  <div class="f"><label>Web address</label><input type="text" id="sUrl" placeholder="https://yoursite.com"></div>
+  <div id="sOut" style="color:var(--dim);white-space:pre-wrap"></div>
+  <div class="row"><button class="btn" data-x>Close</button><button class="btn go" id="sGo">Read</button><button class="btn go" id="sUse" hidden>Use name, colour and logo</button></div>
+</dialog>
+<dialog id="dJob"><h2 id="jT">Rendering</h2>
+  <label class="row" id="jSoc" style="margin-bottom:10px"><input type="checkbox" id="jSocial" checked> Also make vertical and square versions with captions</label>
+  <div id="log"></div><div id="files"></div>
+  <div class="row"><button class="btn" data-x>Close</button><button class="btn go" id="jGo">Start</button></div>
+</dialog>
+
+<script>
+const $ = (id) => document.getElementById(id)
+const call = async (path, body) => {
+  const r = await fetch(path, body ? { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) } : undefined)
+  const j = await r.json(); if (!r.ok) throw new Error(j.error || "failed"); return j
+}
+const say = (text, bad) => { $("note").textContent = text || ""; $("note").className = bad ? "bad" : "" }
+const S = { name: "", template: "", content: null, vo: null, tl: null, t: 0, playing: false, clock: 0, mix: false, dirtyVoice: false, ver: 0, brand: null }
+const fr = $("fr"), au = $("au")
+
+// ---------- preview
+const fit = () => { const v = $("view"), w = Math.min(v.clientWidth, (v.clientHeight * 16) / 9); $("box").style.width = w + "px"; $("box").style.height = (w * 9) / 16 + "px"; fr.style.transform = `scale(${w / 1920})` }
+new ResizeObserver(fit).observe($("view"))
+const build = () => new Promise((done) => {
+  if (!S.content || !S.vo) return done()
+  fr.onload = async () => {
+    try {
+      const w = fr.contentWindow
+      await Promise.all([...w.document.fonts].map((f) => f.load()))
+      S.tl = w.setup(JSON.parse(JSON.stringify(S.content)), S.vo)
+      await Promise.all([...w.document.images].map((i) => i.decode().catch(() => {})))
+      marks(); S.t = Math.min(S.t, S.tl.T); draw(); $("empty").hidden = true
+      if (!S.dirtyVoice) say("")
+    } catch (e) { say("This content does not fit the template: " + e.message, true) }
+    done()
+  }
+  fr.src = `/templates/${S.template}/template.html?v=${++S.ver}`
+})
+const draw = () => {
+  if (!S.tl) return
+  try { fr.contentWindow.frame(S.t) } catch {}
+  const k = S.t / S.tl.T
+  $("track").querySelector("u").style.width = k * 100 + "%"
+  $("track").querySelector("em").style.left = k * 100 + "%"
+  $("time").textContent = `${S.t.toFixed(1)} / ${S.tl.T.toFixed(1)} s`
+}
+const marks = () => { const tr = $("track"); tr.querySelectorAll("s").forEach((e) => e.remove()); for (const x of S.tl.s.slice(1, -1)) { const m = document.createElement("s"); m.style.left = (x / S.tl.T) * 100 + "%"; tr.append(m) } }
+const tick = () => {
+  if (!S.playing) return
+  S.t = S.mix && !au.paused ? au.currentTime : (performance.now() - S.clock) / 1000
+  if (S.t >= S.tl.T) { S.t = S.tl.T; draw(); return pause() }
+  draw(); requestAnimationFrame(tick)
+}
+const play = () => {
+  if (!S.tl) return
+  if (S.t >= S.tl.T - 0.05) S.t = 0
+  S.playing = true; $("play").textContent = "❚❚"; S.clock = performance.now() - S.t * 1000
+  if (S.mix) { au.currentTime = S.t; au.play().catch(() => {}) }
+  requestAnimationFrame(tick)
+}
+const pause = () => { S.playing = false; $("play").textContent = "▶"; au.pause() }
+$("play").onclick = () => (S.playing ? pause() : play())
+addEventListener("keydown", (e) => { if (e.code === "Space" && !/INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)) { e.preventDefault(); $("play").click() } })
+const seek = (e) => { if (!S.tl) return; const r = $("track").getBoundingClientRect(); S.t = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * S.tl.T; S.clock = performance.now() - S.t * 1000; if (S.mix) au.currentTime = S.t; draw() }
+$("track").onpointerdown = (e) => { $("track").setPointerCapture(e.pointerId); seek(e); $("track").onpointermove = seek }
+$("track").onpointerup = () => { $("track").onpointermove = null }
+
+// ---------- sound
+const sound = async () => {
+  pause(); $("sound").disabled = true
+  try {
+    say("Speaking the voice lines…")
+    S.vo = (await call("/api/voice", { name: S.name, content: S.content })).vo
+    await build()
+    say("Mixing music and effects…")
+    await call("/api/mix", { name: S.name, template: S.template, timeline: S.tl })
+    au.src = `/out/${S.name}/mix.wav?v=${++S.ver}`; S.mix = true; S.dirtyVoice = false; $("sound").hidden = true
+    say(S.tl.T > 16.5 ? `The video is ${S.tl.T.toFixed(1)} s long. Shorter voice lines bring it back to about 15 s.` : "")
+  } catch (e) { say(e.message, true) }
+  $("sound").disabled = false
+}
+$("sound").onclick = sound
+
+// ---------- the form, made from the content file itself
+const label = (k) => String(k).replace(/([a-z])([A-Z0-9])/g, "$1 $2").replace(/^./, (c) => c.toUpperCase())
+let timer
+const changed = (path) => {
+  if (/^(vo|voice)(\.|$)/.test(path)) { S.dirtyVoice = true; $("sound").hidden = false; say("Voice changed. Press “Update voice and sound” to hear it.") }
+  clearTimeout(timer); timer = setTimeout(async () => { const was = S.playing; pause(); await call("/api/save", { name: S.name, content: S.content }).catch(() => {}); await build(); if (was) play() }, 450)
+}
+const field = (obj, k, path, into, name) => {
+  const v = obj[k], f = document.createElement("div"); f.className = "f"
+  const l = document.createElement("label"); l.textContent = name; f.append(l)
+  if (typeof v === "boolean") { const i = document.createElement("input"); i.type = "checkbox"; i.checked = v; i.oninput = () => { obj[k] = i.checked; changed(path) }; l.prepend(i, " ") }
+  else if (typeof v === "number") { const i = document.createElement("input"); i.type = "number"; i.step = "any"; i.value = v; i.oninput = () => { if (i.value !== "" && !isNaN(+i.value)) { obj[k] = +i.value; changed(path) } }; f.append(i) }
+  else if (/^#[0-9a-f]{6}$/i.test(v)) {
+    const w = document.createElement("div"); w.className = "col"
+    const c = document.createElement("input"); c.type = "color"; c.value = v
+    const i = document.createElement("input"); i.type = "text"; i.value = v
+    c.oninput = () => { i.value = obj[k] = c.value; changed(path) }
+    i.oninput = () => { if (/^#[0-9a-f]{6}$/i.test(i.value)) { c.value = obj[k] = i.value; changed(path) } }
+    w.append(c, i); f.append(w)
+  } else { const i = document.createElement(String(v).length > 44 ? "textarea" : "input"); if (i.tagName === "INPUT") i.type = "text"; i.value = v ?? ""; i.oninput = () => { obj[k] = i.value; changed(path) }; f.append(i) }
+  into.append(f)
+}
+const walk = (obj, path, into) => {
+  for (const k of Object.keys(obj)) {
+    if (!path && k === "template") continue
+    const v = obj[k], p = path ? path + "." + k : String(k), name = Array.isArray(obj) ? `${+k + 1}` : label(k)
+    if (v && typeof v === "object") {
+      if (!path) { const h = document.createElement("h3"); h.textContent = name; into.append(h); walk(v, p, into) }
+      else { const g = document.createElement("div"); g.className = "grp"; const l = document.createElement("label"); l.textContent = name; l.style.cssText = "display:block;font-size:12px;color:var(--dim);margin-bottom:5px"; g.append(l); walk(v, p, g); into.append(g) }
+    } else if (!path) { if (!into.querySelector("h3.top")) { const h = document.createElement("h3"); h.className = "top"; h.textContent = "Text"; into.prepend(h) } field(obj, k, p, into, name) }
+    else field(obj, k, p, into, name)
+  }
+}
+const form = () => {
+  const a = $("form"); a.textContent = ""
+  // Plain top-level fields first, then each group under its own heading.
+  const flat = document.createDocumentFragment(), groups = document.createDocumentFragment()
+  const top = Object.keys(S.content).filter((k) => k !== "template")
+  if (top.some((k) => typeof S.content[k] !== "object")) { const h = document.createElement("h3"); h.textContent = "Text"; flat.append(h) }
+  for (const k of top) {
+    const v = S.content[k]
+    if (v && typeof v === "object") { const h = document.createElement("h3"); h.textContent = label(k); groups.append(h); walk(v, k, groups) }
+    else field(S.content, k, k, flat, label(k))
+  }
+  a.append(flat, groups)
+  const g = document.createElement("a"); g.href = `/templates/${S.template}/GUIDE.md`; g.target = "_blank"; g.textContent = "Field guide for this template"; g.style.cssText = "display:block;margin-top:18px;color:var(--hot)"; a.append(g)
+}
+
+// ---------- projects
+const state = async (pick) => {
+  const st = await call("/api/state")
+  $("proj").innerHTML = '<option value="">Project…</option>' + st.projects.map((p) => `<option>${p.name}</option>`).join("")
+  $("nTpl").innerHTML = st.templates.map((t) => `<option>${t}</option>`).join("")
+  S.templates = st.templates
+  if (pick) { $("proj").value = pick; await open(pick) }
+}
+const open = async (name) => {
+  pause(); S.tl = null; S.t = 0; S.mix = false; S.dirtyVoice = false; $("sound").hidden = true; $("empty").hidden = false
+  if (!name) { S.name = ""; S.content = null; $("form").textContent = ""; return }
+  const p = await call("/api/project?name=" + name)
+  S.name = name; S.content = p.content; S.vo = p.vo
+  S.template = S.templates.includes(p.content.template) ? p.content.template : ""
+  if (!S.template) {
+    const t = prompt("Which template is this project for?\n" + S.templates.join(", "), S.templates[0])
+    if (!S.templates.includes(t)) return say("Unknown template.", true)
+    S.template = S.content.template = t; await call("/api/save", { name, content: S.content })
+  }
+  form(); $("empty").textContent = "Preparing the preview…"
+  if (S.vo && p.mix && S.vo.length === (S.content.vo ?? []).length) { await build(); au.src = `/out/${name}/mix.wav?v=${++S.ver}`; S.mix = true }
+  else await sound()
+}
+$("proj").onchange = () => open($("proj").value).catch((e) => say(e.message, true))
+for (const b of document.querySelectorAll("[data-x]")) b.onclick = () => b.closest("dialog").close()
+$("new").onclick = () => $("dNew").showModal()
+$("nGo").onclick = async () => { try { const n = $("nName").value.trim(); await call("/api/create", { name: n, template: $("nTpl").value }); $("dNew").close(); await state(n) } catch (e) { alert(e.message) } }
+
+// ---------- read my site
+$("site").onclick = () => { if (!S.name) return say("Open or create a project first.", true); $("sOut").textContent = ""; $("sUse").hidden = true; $("sGo").hidden = false; $("dSite").showModal() }
+$("sGo").onclick = async () => {
+  $("sGo").disabled = true; $("sOut").textContent = "Reading the site…"
+  try {
+    const b = (S.brand = await call("/api/brand", { name: S.name, url: $("sUrl").value.trim() }))
+    $("sOut").textContent = `Name: ${b.name}\nTagline: ${b.tagline}\nColour: ${b.color || "none found (black and white site)"}\nLogo: ${b.files.logo ? "found" + (b.files.logoSourceWidth < 128 ? " (small)" : "") : "not found"}\nScreenshots: ${b.files.screens.length} desktop${b.files.mobile ? ", 1 phone" : ""}${b.files.tour ? "\nLive footage: recorded" : ""}\n\nSaved in projects/${S.name}/. Ask your agent to write the text from brand.json, or type it in the panel.`
+    $("sUse").hidden = false; $("sGo").hidden = true
+  } catch (e) { $("sOut").textContent = e.message }
+  $("sGo").disabled = false
+}
+$("sUse").onclick = () => {
+  const b = S.brand, c = (S.content.brand ??= {})
+  c.name = b.name; c.url = b.host
+  if (b.color) { c.color = b.color; for (const k of ["hue", "hue2", "hue3", "color2", "color3"]) delete c[k] }
+  if (b.files.logo) c.logo = b.files.logo
+  $("dSite").close(); form(); changed("brand")
+}
+
+// ---------- render
+let draftMode = false
+const ask = (draft) => { if (!S.name) return say("Open or create a project first.", true); draftMode = draft; $("jT").textContent = draft ? "Quick render (30 fps, about a minute)" : "Final render (60 fps with motion blur, several minutes)"; $("log").textContent = ""; $("files").textContent = ""; $("jGo").hidden = false; $("dJob").showModal() }
+$("draft").onclick = () => ask(true); $("final").onclick = () => ask(false)
+$("jGo").onclick = async () => {
+  pause(); $("jGo").hidden = true
+  try {
+    await call("/api/save", { name: S.name, content: S.content })
+    await call("/api/render", { name: S.name, template: S.template, draft: draftMode, social: $("jSocial").checked })
+    const poll = setInterval(async () => {
+      const j = await call("/api/job"); $("log").textContent = j.log; $("log").scrollTop = 1e9
+      if (j.running) return
+      clearInterval(poll)
+      $("files").innerHTML = j.ok ? j.files.map((f) => `<a href="/${f}" target="_blank">${f}</a>`).join("") + (j.files[0] ? `<video controls src="/${j.files[0]}?v=${Date.now()}"></video>` : "") : "<span style='color:#ff7a7a'>The render failed. See the log above.</span>"
+    }, 1000)
+  } catch (e) { $("log").textContent = e.message; $("jGo").hidden = false }
+}
+state(new URLSearchParams(location.search).get("p") || "").catch((e) => say(e.message, true))
+</script>
+</html>

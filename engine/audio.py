@@ -1,6 +1,6 @@
 # Builds the soundtrack for a rendered template: synthesized music bed, sound effects on the picture's cues,
 # and the voice lines, with the music ducked under the voice. Everything is generated here, so nothing is licensed from a library.
-# python audio.py <out dir>
+# python audio.py <out dir> [--mix-only]
 import json, subprocess, sys, wave
 from pathlib import Path
 import numpy as np
@@ -281,6 +281,9 @@ S *= 0.89 / max(0.2, np.abs(S).max())
 wav = d / "mix.wav"
 with wave.open(str(wav), "wb") as f:
     f.setnchannels(2); f.setsampwidth(2); f.setframerate(SR); f.writeframes((S * 32767).astype("<i2").tobytes())
+# The studio only needs the sound, before any picture has been rendered.
+if "--mix-only" in sys.argv:
+    print("mix", wav); sys.exit(0)
 out = d / f"{d.resolve().name}.mp4"
 subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(d / "silent.mp4"), "-i", str(wav), "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "256k", "-shortest", "-movflags", "+faststart", str(out)], check=True)
 rms = lambda b: 20 * np.log10(max(1e-9, np.sqrt(np.mean(b.stereo() ** 2))))

@@ -14,7 +14,7 @@ Run `node engine/setup.mjs`. It checks Node, Python, ffmpeg and Chrome, installs
 node engine/brand.mjs <url>
 ```
 
-It opens the real site and writes `projects/<name>/`: `brand.json` (name, tagline, description, headings, button texts, brand colours, dark or light theme, and `figures`, every sentence on the page that contains a number), `logo.png`, `screen.png` plus `screen-2.png` and `screen-3.png` (the page at three scroll positions, 3200 px wide), `mobile.png` (the phone view) and `full.jpg` (the whole page). Look at `screen.png` and `full.jpg` yourself before writing anything. Use `brand.color` as the brand colour (if it is empty the site is black and white: ask, or choose one that suits the template), `logo.png` as the logo unless the report says it is small, and the screenshots wherever the template guide has an `image` field. Numbers on screen may only come from `figures` or from the user.
+It opens the real site and writes `projects/<name>/`: `brand.json` (name, tagline, description, headings, button texts, brand colours, dark or light theme, and `figures`, every sentence on the page that contains a number), `logo.png`, `screen.png` plus `screen-2.png` and `screen-3.png` (the page at three scroll positions, 3200 px wide), `mobile.png` (the phone view), `full.jpg` (the whole page), and `tour/` and `tour-mobile/` (the page scrolling, recorded frame by frame). When a template's `image` field points at `screen.png` (or `mobile.png` on a phone template), the renderer plays that recording inside the picture automatically, so the real site moves in the video; put `"tour": false` in the content file to keep it still. Look at `screen.png` and `full.jpg` yourself before writing anything. Use `brand.color` as the brand colour (if it is empty the site is black and white: ask, or choose one that suits the template), `logo.png` as the logo unless the report says it is small, and the screenshots wherever the template guide has an `image` field. Numbers on screen may only come from `figures` or from the user.
 
 You need: product name, website, one brand colour (hex), what the product does, who it is for, and the single outcome the customer gets. Get these from, in order: what the user told you, files in this folder, then the product's website if you can read it. Ask the user only for what is still missing. Never invent numbers, customers, reviews or results: every figure on screen must come from the user or be an obviously illustrative sample they approved.
 
@@ -57,6 +57,10 @@ Give the user the path `out/<name>/<name>.mp4`. For a smaller file to post on so
 ```
 ffmpeg -i out/<name>/<name>.mp4 -c:v libx264 -crf 22 -preset slow -c:a aac -b:a 192k out/<name>/<name>-share.mp4
 ```
+
+## Studio
+
+`node engine/studio.mjs` opens a local page where the user can watch the video with sound before rendering, change every word, number and colour in a form, re-voice it, read their site and start the render with a button. Offer it when the user wants to tweak things themselves; keep the command running while they use it. Projects made there are the same `projects/<name>/content.json` files (with a `"template"` key naming the template).
 
 ## 5. Changes
 

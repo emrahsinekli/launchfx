@@ -35,6 +35,51 @@ await page.goto(`http://127.0.0.1:${server.address().port}/templates/${id}/templ
 await page.evaluate(() => Promise.all([...document.fonts].map((f) => f.load())))
 const tl = await page.evaluate((c, v) => window.setup(c, v), content, vo)
 await page.evaluate(() => Promise.all([...document.images].map((i) => i.decode().catch(() => {}))))
+// Live footage: where a template shows projects/<name>/screen*.png or mobile*.png and a recorded tour sits beside it,
+// the tour plays in that picture while it is on screen. "tour": false in the content file turns this off.
+if (content.tour !== false) {
+  const shown = await page.evaluate(() => [...document.images].map((im, i) => ({ i, path: decodeURIComponent(new URL(im.src, location.href).pathname) })))
+  const list = []
+  for (const o of shown) {
+    const m = o.path.match(/^\/(.+)\/(screen|mobile)[^/]*\.(png|jpe?g|webp)$/i); if (!m) continue
+    const dir = `${m[1]}/${m[2].toLowerCase() === "mobile" ? "tour-mobile" : "tour"}`
+    if (existsSync(join(ROOT, dir, "tour.json"))) list.push({ i: o.i, dir, ...JSON.parse(readFileSync(join(ROOT, dir, "tour.json"), "utf8")) })
+  }
+  if (list.length) {
+    const plays = await page.evaluate((list, T, clicks) => {
+      const imgs = [...document.images]
+      const seen = (e) => {
+        const r = e.getBoundingClientRect()
+        if (r.width < 120 || r.right < 0 || r.bottom < 0 || r.left > innerWidth || r.top > innerHeight) return false
+        for (let n = e; n && n.nodeType === 1; n = n.parentElement) { const s = getComputedStyle(n); if (s.display === "none" || s.visibility === "hidden" || +s.opacity < 0.05) return false }
+        return true
+      }
+      const plays = list.map((o) => ({ ...o, el: imgs[o.i], t0: -1, t1: -1, at: 0 }))
+      // When is each picture on screen? Walk the whole video once and note it.
+      for (let t = 0; t <= T; t += 0.1) { window.frame(t); for (const p of plays) if (seen(p.el)) { if (p.t0 < 0) p.t0 = t; p.t1 = t } }
+      for (const p of plays) {
+        if (p.t0 < 0) continue
+        // A click in the scene sets the page moving; otherwise it starts shortly after the picture arrives.
+        const c = clicks.find((t) => t > p.t0 && t < p.t1 - 0.8)
+        p.start = c != null ? c + 0.2 : p.t0 + 0.45
+        p.span = Math.max(0.5, Math.min(p.frames / p.fps, p.t1 - p.start - 0.3))
+      }
+      const draw = window.frame
+      window.frame = async (t) => {
+        draw(t)
+        for (const p of plays) {
+          if (p.t0 < 0) continue
+          const n = 1 + Math.round(Math.min(1, Math.max(0, (t - p.start) / p.span)) * (p.frames - 1))
+          if (n === p.at) continue
+          p.at = n; p.el.src = "/" + p.dir + "/" + String(n).padStart(4, "0") + ".jpg"
+          await p.el.decode().catch(() => {})
+        }
+      }
+      return plays.filter((p) => p.t0 >= 0).map((p) => `${p.dir} ${p.start.toFixed(1)}-${(p.start + p.span).toFixed(1)} s`)
+    }, list, tl.T, (tl.cues ?? []).filter((c) => c.k === "click").map((c) => c.t))
+    if (plays.length) console.log("live footage:", plays.join(", "))
+  }
+}
 mkdirSync(OUT, { recursive: true })
 writeFileSync(join(OUT, "timeline.json"), JSON.stringify({ id, fps: FPS, ...tl }))
 console.log("length", tl.T.toFixed(2), "s, scenes at", tl.s.map((x) => x.toFixed(2)).join(" "))

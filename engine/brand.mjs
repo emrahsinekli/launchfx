@@ -1,6 +1,7 @@
 // Reads a product's real website and collects what a video needs: name, words, numbers, brand colours, logo and screenshots.
 // node engine/brand.mjs <url> [name]
-// Writes projects/<name>/brand.json, logo.png, screen.png, screen-2.png, screen-3.png, mobile.png and full.jpg.
+// Writes projects/<name>/brand.json, logo.png, screen.png, screen-2.png, screen-3.png, mobile.png, full.jpg,
+// and tour/ and tour-mobile/: the page scrolling, frame by frame, which the renderer plays wherever screen.png or mobile.png is shown.
 import { existsSync, mkdirSync, writeFileSync } from "node:fs"
 import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -32,6 +33,24 @@ const open = async (page) => {
       if (/cookie|consent|gdpr/i.test(e.innerText || "") && r.width * r.height < innerWidth * innerHeight * 0.6) e.remove()
     }
   })
+}
+
+// The site in motion: the page scrolled down frame by frame, so sticky headers and sections that appear on scroll are real.
+const tour = async (page, dir, w, h) => {
+  const tall = await page.evaluate(() => document.documentElement.scrollHeight)
+  const far = Math.min(tall - h, Math.round(h * 2.2))
+  if (far < 80) return null
+  mkdirSync(join(OUT, dir), { recursive: true })
+  await page.addStyleTag({ content: "html{scroll-behavior:auto!important}" })
+  const N = 120, ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2)
+  for (let i = 0; i < N; i++) {
+    const y = Math.round(far * ease(Math.min(1, Math.max(0, (i - 15) / 90))))
+    await page.evaluate((y) => new Promise((r) => { scrollTo(0, y); requestAnimationFrame(() => requestAnimationFrame(r)) }), y)
+    await page.screenshot({ path: join(OUT, dir, String(i + 1).padStart(4, "0") + ".jpg"), type: "jpeg", quality: 80, optimizeForSpeed: true })
+  }
+  await page.evaluate(() => scrollTo(0, 0))
+  writeFileSync(join(OUT, dir, "tour.json"), JSON.stringify({ fps: 30, frames: N, width: w, height: h }) + "\n")
+  return `projects/${slug}/${dir}`
 }
 
 const page = await browser.newPage()
@@ -117,6 +136,8 @@ for (let i = 1; i <= 2 && i * 900 < tall - 500; i++) {
 for (let y = 0; y < Math.min(tall, 9000); y += 800) { await page.evaluate((y) => scrollTo(0, y), y); await sleep(120) }
 await page.evaluate(() => scrollTo(0, 0)); await sleep(300)
 await page.setViewport({ width: 1600, height: 1000, deviceScaleFactor: 1 })
+await sleep(300)
+files.tour = await tour(page, "tour", 1600, 1000).catch(() => null)
 await page.screenshot({ path: join(OUT, "full.jpg"), type: "jpeg", quality: 80, clip: { x: 0, y: 0, width: 1600, height: Math.min(tall, 9000) } }).then(() => { files.full = `projects/${slug}/full.jpg` }).catch(() => {})
 
 // The logo: the best icon the site declares, drawn at 512 px on a transparent background.
@@ -168,7 +189,7 @@ await tile.close()
 const phone = await browser.newPage()
 await phone.setViewport({ width: 390, height: 844, deviceScaleFactor: 3, isMobile: true, hasTouch: true })
 await phone.setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1")
-try { await open(phone); await phone.screenshot({ path: join(OUT, "mobile.png") }); files.mobile = `projects/${slug}/mobile.png` } catch {}
+try { await open(phone); await phone.screenshot({ path: join(OUT, "mobile.png") }); files.mobile = `projects/${slug}/mobile.png`; await phone.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true }); await sleep(300); files.tourMobile = await tour(phone, "tour-mobile", 780, 1688).catch(() => null) } catch {}
 await browser.close()
 
 delete info.icons
@@ -180,4 +201,5 @@ console.log(`colour   ${brand.color || "(none found, ask the user)"}  ${brand.co
 console.log(`theme    ${brand.theme}`)
 console.log(`logo     ${files.logo ? `${files.logo} (source ${files.logoSourceWidth} px wide${files.logoSourceWidth < 128 ? ", small: ask the user for a better one" : ""})` : "(none found)"}`)
 console.log(`shots    ${[...files.screens, files.mobile, files.full].filter(Boolean).join(", ")}`)
+console.log(`footage  ${[files.tour, files.tourMobile].filter(Boolean).join(", ") || "(page too short to scroll)"}`)
 console.log(`\nwritten  projects/${slug}/brand.json`)
