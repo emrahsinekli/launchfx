@@ -1,0 +1,414 @@
+{
+ "price": 99,
+ "checkout": "https://launchfx.dev/pricing/",
+ "templates": [
+  {
+   "id": "001-aurora",
+   "slug": "aurora",
+   "name": "Aurora",
+   "category": "SaaS launch",
+   "about": "Dark, loud and fast. A flowing aurora, slamming type, sparks and a 3D product reveal.",
+   "length": "15 s",
+   "scenes": [
+    "Hook",
+    "Logo reveal",
+    "Product",
+    "Question and answer",
+    "End card"
+   ],
+   "free": true,
+   "page": "https://launchfx.dev/templates/aurora/"
+  },
+  {
+   "id": "002-daylight",
+   "slug": "daylight",
+   "name": "Daylight",
+   "category": "Product demo",
+   "about": "Bright, clean and confident. Masked type, a product window that gets clicked, feature cards and one big number.",
+   "length": "15 s",
+   "scenes": [
+    "Statement",
+    "Product click",
+    "Feature cards",
+    "Big number",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/daylight/"
+  },
+  {
+   "id": "003-voltage",
+   "slug": "voltage",
+   "name": "Voltage",
+   "category": "Promo and ads",
+   "about": "One colour, black and giant type. Words that fill the screen, a before and after split, numbers that flip in.",
+   "length": "15 s",
+   "scenes": [
+    "Word wall",
+    "Name plate",
+    "Before and after",
+    "Numbers",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/voltage/"
+  },
+  {
+   "id": "004-terminal",
+   "slug": "terminal",
+   "name": "Terminal",
+   "category": "Developer tools",
+   "about": "For developer tools. A typed command, a name that decodes from noise, a collapsing code diff and a speed comparison.",
+   "length": "15 s",
+   "scenes": [
+    "Terminal",
+    "Name decode",
+    "Code diff",
+    "Comparison",
+    "Install command"
+   ],
+   "free": true,
+   "page": "https://launchfx.dev/templates/terminal/"
+  },
+  {
+   "id": "005-dispatch",
+   "slug": "dispatch",
+   "name": "Dispatch",
+   "category": "Feature update",
+   "about": "A release announced as a newspaper front page. The camera travels over the page; a rubber stamp lands at the end.",
+   "length": "15 s",
+   "scenes": [
+    "Masthead",
+    "Lead story",
+    "Three columns",
+    "Number and stamp",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/dispatch/"
+  },
+  {
+   "id": "006-pocket",
+   "slug": "pocket",
+   "name": "Pocket",
+   "category": "Mobile app",
+   "about": "For mobile apps. A phone spins in, three screens slide past, notifications drop on the beat. Bright and bouncy.",
+   "length": "15 s",
+   "scenes": [
+    "Hook",
+    "Hero phone",
+    "Screen carousel",
+    "Notifications",
+    "App icon"
+   ],
+   "free": true,
+   "page": "https://launchfx.dev/templates/pocket/"
+  },
+  {
+   "id": "007-orbit",
+   "slug": "orbit",
+   "name": "Orbit",
+   "category": "AI product",
+   "about": "For AI products. One continuous shot: a cloud of glowing particles becomes a sphere, an avatar, a ring, a sound wave.",
+   "length": "15 s",
+   "scenes": [
+    "Sphere",
+    "Question and answer",
+    "Skills ring",
+    "One number",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/orbit/"
+  },
+  {
+   "id": "008-arcade",
+   "slug": "arcade",
+   "name": "Arcade",
+   "category": "Milestone",
+   "about": "A milestone announced as an 8-bit game: the score rolls up, coins rain, achievements unlock. Chiptune soundtrack.",
+   "length": "15 s",
+   "scenes": [
+    "Title screen",
+    "Score",
+    "Achievements",
+    "High scores",
+    "Continue?"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/arcade/"
+  },
+  {
+   "id": "009-ticket",
+   "slug": "ticket",
+   "name": "Ticket",
+   "category": "Offer and pricing",
+   "about": "A deal announced with a paper ticket: a split-flap board drops to the new price, perks get punched, scissors cut out the code.",
+   "length": "15 s",
+   "scenes": [
+    "Ticket",
+    "Price board",
+    "Perks",
+    "Coupon code",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/ticket/"
+  },
+  {
+   "id": "010-trailer",
+   "slug": "trailer",
+   "name": "Trailer",
+   "category": "Teaser",
+   "about": "A teaser cut like a film trailer: black screen, metallic capitals, three words over blurred glimpses, the name reveal and the date.",
+   "length": "15 s",
+   "scenes": [
+    "Date card",
+    "Three words",
+    "Statement",
+    "Name reveal",
+    "Waitlist"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/trailer/"
+  },
+  {
+   "id": "011-blueprint",
+   "slug": "blueprint",
+   "name": "Blueprint",
+   "category": "How it works",
+   "about": "An explainer drawn as a technical blueprint: lines that draw themselves, a three-step flow, an exploded view, measurements to scale.",
+   "length": "15 s",
+   "scenes": [
+    "Headline",
+    "Flow",
+    "Exploded layers",
+    "Measurements",
+    "Approval stamp"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/blueprint/"
+  },
+  {
+   "id": "012-plug",
+   "slug": "plug",
+   "name": "Plug",
+   "category": "Integration",
+   "about": "An integration announcement: two tiles snap together, items travel between the two products, three setup steps. Flat colours and thick outlines.",
+   "length": "15 s",
+   "scenes": [
+    "The snap",
+    "Two names",
+    "What syncs",
+    "Setup steps",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/plug/"
+  },
+  {
+   "id": "013-marquee",
+   "slug": "marquee",
+   "name": "Marquee",
+   "category": "Event",
+   "about": "An event announced under a theatre marquee: chasing bulbs, neon that stutters on, a letter board for the date, spotlights on the agenda.",
+   "length": "15 s",
+   "scenes": [
+    "Neon sign",
+    "Letter board",
+    "Agenda",
+    "Seats",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/marquee/"
+  },
+  {
+   "id": "014-versus",
+   "slug": "versus",
+   "name": "Versus",
+   "category": "Comparison",
+   "about": "A comparison staged as a fighting game: a slammed VS, three rounds won one by one, a falling health bar and a K.O.",
+   "length": "15 s",
+   "scenes": [
+    "VS",
+    "Three rounds",
+    "K.O.",
+    "Winner",
+    "Switch"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/versus/"
+  },
+  {
+   "id": "015-deskpad",
+   "slug": "deskpad",
+   "name": "Deskpad",
+   "category": "Hiring",
+   "about": "A hiring post on a cutting mat: sticky notes slapped down, role cards taped on, handwriting and marker strokes that draw themselves.",
+   "length": "15 s",
+   "scenes": [
+    "Big note",
+    "Role cards",
+    "Perks",
+    "The team",
+    "Apply"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/deskpad/"
+  },
+  {
+   "id": "016-annual",
+   "slug": "annual",
+   "name": "Annual",
+   "category": "Year in review",
+   "about": "A year in review as a Swiss typographic poster: the year rolls in like an odometer, heavy numerals, a month-by-month line of milestones.",
+   "length": "15 s",
+   "scenes": [
+    "The year",
+    "Headline number",
+    "Two blocks",
+    "Timeline",
+    "Thank you"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/annual/"
+  },
+  {
+   "id": "017-thread",
+   "slug": "thread",
+   "name": "Thread",
+   "category": "Story",
+   "about": "The product story told as a group chat: typing dots, bubbles that pop in, a result card with ticks, hearts flying up.",
+   "length": "15 s",
+   "scenes": [
+    "The problem",
+    "The answer",
+    "Result card",
+    "The reaction",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/thread/"
+  },
+  {
+   "id": "018-sunset",
+   "slug": "sunset",
+   "name": "Sunset",
+   "category": "Promo and ads",
+   "about": "Eighties synthwave: a neon grid rushing at the camera, a striped sun, chrome lettering and videotape glitches on every cut.",
+   "length": "15 s",
+   "scenes": [
+    "Hook",
+    "Chrome name",
+    "Neon cards",
+    "One figure",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/sunset/"
+  },
+  {
+   "id": "019-atlas",
+   "slug": "atlas",
+   "name": "Atlas",
+   "category": "Expansion",
+   "about": "An expansion announced on a dot map of the world: a radar sweep, a pin on the home city, routes arcing out to new ones, one big count.",
+   "length": "15 s",
+   "scenes": [
+    "Map and headline",
+    "Routes",
+    "The count",
+    "Local perks",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/atlas/"
+  },
+  {
+   "id": "020-chalk",
+   "slug": "chalk",
+   "name": "Chalk",
+   "category": "Offer and pricing",
+   "about": "Pricing written on a café chalkboard: plans as a menu with dotted leaders, the recommended one circled, chalk dust falling as it writes.",
+   "length": "15 s",
+   "scenes": [
+    "Headline",
+    "The menu",
+    "Recommended plan",
+    "Promise",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/chalk/"
+  },
+  {
+   "id": "021-receipt",
+   "slug": "receipt",
+   "name": "Receipt",
+   "category": "Savings",
+   "about": "A savings story printed as a till receipt: the printer feeds it out line by line, the total gets highlighted, the camera pushes in.",
+   "length": "15 s",
+   "scenes": [
+    "Header",
+    "Items",
+    "Adding up",
+    "The total",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/receipt/"
+  },
+  {
+   "id": "022-panels",
+   "slug": "panels",
+   "name": "Panels",
+   "category": "Story",
+   "about": "A story told as a comic-book page: the camera goes from panel to panel, bursts and speed lines, then a banner snaps across the page.",
+   "length": "15 s",
+   "scenes": [
+    "The problem",
+    "The hero",
+    "The action",
+    "The reaction",
+    "Banner"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/panels/"
+  },
+  {
+   "id": "023-jackpot",
+   "slug": "jackpot",
+   "name": "Jackpot",
+   "category": "Giveaway",
+   "about": "A giveaway on a slot machine: three reels spin and stop on the prize, bulbs chase, coins burst out, then how to enter and when.",
+   "length": "15 s",
+   "scenes": [
+    "Lit sign",
+    "The reels",
+    "How to enter",
+    "Draw date",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/jackpot/"
+  },
+  {
+   "id": "024-prism",
+   "slug": "prism",
+   "name": "Prism",
+   "category": "Analytics",
+   "about": "For analytics features: an isometric 3D world where real 3D columns rise from a glowing grid, glass tiles float in and the camera circles.",
+   "length": "15 s",
+   "scenes": [
+    "Headline",
+    "3D chart",
+    "Glass tiles",
+    "The insight",
+    "End card"
+   ],
+   "free": false,
+   "page": "https://launchfx.dev/templates/prism/"
+  }
+ ]
+}

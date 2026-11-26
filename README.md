@@ -31,6 +31,20 @@ The agent runs the setup, reads your site, writes the content, shows you a previ
 
 Developed and tested on Windows. macOS and Linux have had less testing: please open an issue if something breaks.
 
+## MCP server and launch kits
+
+The folder is also an MCP server, so your assistant gets LaunchFX as tools: `read_site`, `list_templates`, `get_template`, `save_content`, `preview_frames` (it sees the frames and fixes them), `make_video`, `job_status`, plus `list_launch_kits` and `plan_launch`.
+
+- **Claude Code and Cursor**: open this folder; the server is picked up from `.mcp.json` / `.cursor/mcp.json`.
+- **Codex, Claude Desktop, Windsurf**: run `node engine/mcp.mjs --config` and paste what it prints.
+- **Nothing installed** (ideas, plans and scripts only): add `https://launchfx.dev/mcp` as a remote MCP server or Claude connector.
+
+A launch kit is a plan for a whole launch: which video to post on which day, how it opens and which facts are needed. There are nine (launch week, developer tool, mobile app, AI product, feature release, offer and sale, year in review, always-on ads, company news). Say:
+
+> Plan my launch for 8 December and make every video
+
+Kits use templates from the whole catalogue; the plan tells you which ones are in the free edition and which are in the all-access pack.
+
 ## Studio
 
 ```

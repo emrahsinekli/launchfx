@@ -63,6 +63,14 @@ Give the user the path `out/<name>/<name>.mp4`. For a smaller file to post on so
 ffmpeg -i out/<name>/<name>.mp4 -c:v libx264 -crf 22 -preset slow -c:a aac -b:a 192k out/<name>/<name>-share.mp4
 ```
 
+## MCP tools
+
+If the `launchfx` MCP server is connected (it starts from `.mcp.json` in this folder), prefer its tools over the commands above: `read_site`, `list_templates`, `get_template`, `save_content` (it checks the content against the template), `preview_frames` (returns the frames as images: look at them), `make_video`, `job_status`, `list_projects`, `open_studio`, `setup`. They do the same work as the commands.
+
+## Planning a whole launch
+
+When the user asks what to post, wants ideas, or is preparing a launch, do not stop at one video. `engine/kits.json` holds nine launch kits (MCP: `list_launch_kits`, `plan_launch`): each is a sequence of videos with the day, the template, what the video must achieve, its opening hook, the channels and the facts needed. Pick the kit that fits, show the user the dated plan as a table, ask for every fact under `needs` before writing, and say plainly which templates in the plan are not in this folder. Write one content file per video: `projects/<name>/01-teaser.json`, `02-launch.json` and so on, each with a `"template"` key, and render with `node engine/make.mjs <id> projects/<name>/01-teaser.json --out <name>-01-teaser`. Skip a video rather than invent the number it needs.
+
 ## Studio
 
 `node engine/studio.mjs` opens a local page where the user can watch the video with sound before rendering, change every word, number and colour in a form, re-voice it, read their site and start the render with a button. Offer it when the user wants to tweak things themselves; keep the command running while they use it. Projects made there are the same `projects/<name>/content.json` files (with a `"template"` key naming the template).

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "launchfx": {
+      "command": "node",
+      "args": [
+        "engine/mcp.mjs"
+      ]
+    }
+  }
+}

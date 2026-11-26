@@ -1,0 +1,119 @@
+[
+  {
+    "id": "launch-week",
+    "name": "Launch week",
+    "for": "A new SaaS or web product going public: Product Hunt, X, LinkedIn, your own list.",
+    "outcome": "Six videos that carry one launch from the first hint to the thank-you post, so every day of the week has something new to show.",
+    "steps": [
+      { "day": -3, "template": "010-trailer", "title": "Teaser", "job": "Make people curious and tell them the date. Say what changes for them, not what the product is.", "channels": ["X", "LinkedIn", "Shorts"], "hook": "Three words for the pain, then the name and the date.", "needs": ["launch date", "three words that describe the customer's problem"] },
+      { "day": 0, "template": "001-aurora", "title": "Launch video", "job": "The main post. State the outcome in the first two seconds and show the product once.", "channels": ["Product Hunt", "X", "LinkedIn", "landing page hero"], "hook": "The customer's outcome as a short statement, then the product name.", "needs": ["one-sentence outcome", "product screenshot", "brand colour"] },
+      { "day": 0, "template": "002-daylight", "title": "Product demo", "job": "Show the one click that delivers the outcome. For the gallery, the landing page and replies to 'what does it do?'.", "channels": ["Product Hunt gallery", "landing page", "replies"], "hook": "The promise in two lines, then the click.", "needs": ["screenshot of the main screen", "where to click", "three features", "one real number, or none"] },
+      { "day": 1, "template": "011-blueprint", "title": "How it works", "job": "Answer the questions from day one in three steps.", "channels": ["X thread", "docs", "LinkedIn"], "hook": "'How it works, in three steps.'", "needs": ["the three steps a new user takes", "real measurements if you quote any"] },
+      { "day": 3, "template": "017-thread", "title": "Story", "job": "Tell why it was built as a chat between two people. Feels human, gets shared.", "channels": ["X", "TikTok", "Reels"], "hook": "A message a real customer would send on a bad day.", "needs": ["the situation that led to the product", "the result the customer gets"] },
+      { "day": 7, "template": "008-arcade", "title": "Milestone thank-you", "job": "Close the week with a real number and thank the people who helped.", "channels": ["X", "LinkedIn"], "hook": "The number, then what it unlocked.", "needs": ["one real launch-week number (sign-ups, votes, stars)", "three things that happened"] }
+    ]
+  },
+  {
+    "id": "developer-tool",
+    "name": "Developer tool launch",
+    "for": "CLIs, libraries, APIs and infrastructure, launched on X, Hacker News, Reddit and GitHub.",
+    "outcome": "Five videos that speak to developers in their own language: the command, the diff, the benchmark, the integration.",
+    "steps": [
+      { "day": -2, "template": "010-trailer", "title": "Teaser", "job": "One hint and the date. Keep it dry; developers punish hype.", "channels": ["X"], "hook": "Three words for the thing developers hate doing.", "needs": ["launch date"] },
+      { "day": 0, "template": "004-terminal", "title": "Launch video", "job": "Show the install command and the before/after in code.", "channels": ["X", "README", "Hacker News post", "Reddit"], "hook": "The command typed on screen.", "needs": ["install command", "a short before/after code sample", "a measured speed or size comparison, or none"] },
+      { "day": 1, "template": "011-blueprint", "title": "How it works", "job": "Architecture in three steps for the people asking in the comments.", "channels": ["X thread", "docs"], "hook": "'What happens when you run it.'", "needs": ["three steps of the flow"] },
+      { "day": 3, "template": "014-versus", "title": "Comparison", "job": "Put it next to the tool people use today, on three real points.", "channels": ["X", "Reddit"], "hook": "'<tool> vs the old way.'", "needs": ["three comparisons you can prove", "permission to name the other tool, or call it 'the old way'"] },
+      { "day": 5, "template": "012-plug", "title": "Integration", "job": "Announce the first integration people asked for.", "channels": ["X", "partner's channel"], "hook": "'<product> now works with <partner>.'", "needs": ["partner name and logo permission", "three setup steps"] }
+    ]
+  },
+  {
+    "id": "mobile-app",
+    "name": "Mobile app launch",
+    "for": "iOS and Android apps launched on TikTok, Reels, Shorts and the app stores.",
+    "outcome": "Five vertical-first videos: the hint, the app itself, a story, the countries and the first milestone.",
+    "steps": [
+      { "day": -3, "template": "010-trailer", "title": "Teaser", "job": "Announce the date with three words about the habit the app changes.", "channels": ["TikTok", "Reels", "Shorts"], "hook": "Three words, then the name.", "needs": ["release date"] },
+      { "day": 0, "template": "006-pocket", "title": "Launch video", "job": "Show three real screens and what the user gets from each.", "channels": ["TikTok", "Reels", "Shorts", "store preview"], "hook": "The outcome in five words over the spinning phone.", "needs": ["three phone screenshots", "store link or handle"] },
+      { "day": 2, "template": "017-thread", "title": "Story", "job": "A chat between friends where one recommends the app.", "channels": ["TikTok", "Reels"], "hook": "The question a friend would really ask.", "needs": ["the everyday situation the app fixes"] },
+      { "day": 5, "template": "019-atlas", "title": "Where it is available", "job": "Show the countries or cities the app is live in.", "channels": ["X", "LinkedIn", "Reels"], "hook": "'Now in <n> countries.'", "needs": ["home city", "real list of places"] },
+      { "day": 7, "template": "008-arcade", "title": "Milestone", "job": "Celebrate the first real download or rating number.", "channels": ["X", "Reels"], "hook": "The number rolling up.", "needs": ["one real number from the store console"] }
+    ]
+  },
+  {
+    "id": "ai-product",
+    "name": "AI product launch",
+    "for": "Assistants, agents and AI features, where the audience has seen a hundred demos already.",
+    "outcome": "Five videos that prove the product does a job, instead of showing another chat box.",
+    "steps": [
+      { "day": 0, "template": "007-orbit", "title": "Launch video", "job": "One continuous shot that says what the AI does for the customer.", "channels": ["X", "LinkedIn", "landing page hero"], "hook": "The job it takes off your hands, in one line.", "needs": ["the single job the AI does", "what the customer gets back"] },
+      { "day": 1, "template": "002-daylight", "title": "Real demo", "job": "Show the real screen and the one click. Proof beats claims.", "channels": ["X", "landing page"], "hook": "The promise, then the click.", "needs": ["real screenshot", "where to click"] },
+      { "day": 2, "template": "011-blueprint", "title": "How it works", "job": "Explain where the data goes and what the model does, in three steps.", "channels": ["LinkedIn", "docs"], "hook": "'What happens to your data.'", "needs": ["three honest steps", "privacy facts"] },
+      { "day": 4, "template": "014-versus", "title": "Comparison", "job": "Doing it by hand versus with the product, on three points.", "channels": ["X", "Reddit"], "hook": "'By hand vs <product>.'", "needs": ["three comparisons you measured"] },
+      { "day": 6, "template": "022-panels", "title": "Story", "job": "A customer's day as a comic page: before, the moment, after.", "channels": ["X", "Reels", "TikTok"], "hook": "The worst moment of the old way.", "needs": ["a real or clearly illustrative customer situation"] }
+    ]
+  },
+  {
+    "id": "feature-release",
+    "name": "Feature release",
+    "for": "An existing product shipping something new and wanting users to notice and try it.",
+    "outcome": "Four videos for one release: the announcement, the demo, the numbers and the story.",
+    "steps": [
+      { "day": 0, "template": "005-dispatch", "title": "Announcement", "job": "The release as front-page news. For the changelog, the email and social.", "channels": ["changelog", "email", "X", "LinkedIn"], "hook": "The headline a newspaper would print.", "needs": ["feature name", "release date", "three things that changed"] },
+      { "day": 1, "template": "002-daylight", "title": "Feature demo", "job": "Show the new screen and the click that uses it.", "channels": ["in-app", "help centre", "X"], "hook": "What you can do now, in two lines.", "needs": ["screenshot of the new feature", "where to click"] },
+      { "day": 2, "template": "024-prism", "title": "The numbers", "job": "If the feature is about data or speed, show it as 3D bars.", "channels": ["LinkedIn", "X"], "hook": "The number that got better.", "needs": ["real measured values", "what they compare to"] },
+      { "day": 4, "template": "017-thread", "title": "Customer story", "job": "Two teammates talking about the feature the day it arrives.", "channels": ["X", "Reels"], "hook": "'Did you see the update?'", "needs": ["the problem the feature removes"] }
+    ]
+  },
+  {
+    "id": "offer",
+    "name": "Offer and sale",
+    "for": "Black Friday, launch discounts, lifetime deals, price changes and giveaways.",
+    "outcome": "Six videos that run a sale from the first hint to the last-day reminder without repeating one look.",
+    "steps": [
+      { "day": -2, "template": "010-trailer", "title": "Teaser", "job": "Say something is coming and when. Do not show the price yet.", "channels": ["X", "email", "Reels"], "hook": "Three words and a date.", "needs": ["start date"] },
+      { "day": 0, "template": "009-ticket", "title": "The deal", "job": "Old price, new price, the code and the end date.", "channels": ["X", "LinkedIn", "email", "landing banner"], "hook": "The board flipping to the new price.", "needs": ["real old and new price", "discount code", "end date", "three things included"] },
+      { "day": 1, "template": "020-chalk", "title": "The plans", "job": "Show the plans as a menu and point at the one to pick.", "channels": ["X", "pricing page"], "hook": "'Today's menu.'", "needs": ["plan names and real prices", "which one you recommend"] },
+      { "day": 2, "template": "021-receipt", "title": "What you save", "job": "Add up what the customer stops paying for, line by line.", "channels": ["X", "LinkedIn"], "hook": "The receipt printing out.", "needs": ["real costs it replaces", "the total"] },
+      { "day": 3, "template": "023-jackpot", "title": "Giveaway", "job": "A prize draw to bring new people in mid-sale.", "channels": ["X", "Reels", "TikTok"], "hook": "Reels spinning to the prize.", "needs": ["the prize", "how to enter", "closing date", "rules you will keep"] },
+      { "day": 5, "template": "003-voltage", "title": "Last day", "job": "Loud, one colour, one message: it ends today.", "channels": ["X", "Reels", "email"], "hook": "'Ends tonight.' filling the screen.", "needs": ["end time", "the same real prices"] }
+    ]
+  },
+  {
+    "id": "year-in-review",
+    "name": "Year in review",
+    "for": "End-of-year and anniversary posts, investor updates and community thank-yous.",
+    "outcome": "Five videos that turn a year of real numbers into something people watch to the end.",
+    "steps": [
+      { "day": 0, "template": "016-annual", "title": "The year", "job": "The headline numbers and the month-by-month milestones.", "channels": ["X", "LinkedIn", "email"], "hook": "The year rolling in like an odometer.", "needs": ["three real numbers", "up to twelve dated milestones"] },
+      { "day": 1, "template": "024-prism", "title": "Growth", "job": "One metric over time as rising 3D columns.", "channels": ["LinkedIn", "X"], "hook": "The first column next to the last.", "needs": ["real values per period"] },
+      { "day": 2, "template": "019-atlas", "title": "Where our customers are", "job": "The map of places you reached.", "channels": ["X", "LinkedIn"], "hook": "'From one city to <n>.'", "needs": ["home city", "real list of places"] },
+      { "day": 3, "template": "021-receipt", "title": "What customers saved", "job": "The year's savings as a receipt.", "channels": ["X"], "hook": "The total highlighted.", "needs": ["real or clearly calculated savings"] },
+      { "day": 4, "template": "008-arcade", "title": "Thank you", "job": "The biggest number as a high score, and what comes next.", "channels": ["X", "Reels"], "hook": "The score rolling up.", "needs": ["one real number", "three achievements"] }
+    ]
+  },
+  {
+    "id": "always-on-ads",
+    "name": "Always-on ads",
+    "for": "Paid and organic social when nothing is launching: you need new creative every week.",
+    "outcome": "Five ads with five different looks for the same product, so you can test which one stops the scroll.",
+    "steps": [
+      { "day": 0, "template": "003-voltage", "title": "Bold claim", "job": "One sentence in giant type, then before and after.", "channels": ["X ads", "Reels", "TikTok"], "hook": "The outcome as three words that fill the screen.", "needs": ["the outcome", "a real before/after"] },
+      { "day": 7, "template": "018-sunset", "title": "Retro", "job": "The same message in a look nobody else in your market uses.", "channels": ["Reels", "TikTok", "Shorts"], "hook": "Chrome lettering over the grid.", "needs": ["the outcome in five words"] },
+      { "day": 14, "template": "014-versus", "title": "Us vs the old way", "job": "Three rounds, three wins.", "channels": ["X ads", "Reddit"], "hook": "The slammed VS.", "needs": ["three provable comparisons"] },
+      { "day": 21, "template": "022-panels", "title": "Comic", "job": "Problem, product, relief in four panels.", "channels": ["Reels", "TikTok", "LinkedIn"], "hook": "The first panel's cry for help.", "needs": ["one customer situation"] },
+      { "day": 28, "template": "021-receipt", "title": "The bill", "job": "What the old way costs each month, added up.", "channels": ["LinkedIn", "X ads"], "hook": "The receipt feeding out.", "needs": ["real cost lines"] }
+    ]
+  },
+  {
+    "id": "company-news",
+    "name": "Company news",
+    "for": "Hiring, events, webinars, new markets and partnerships.",
+    "outcome": "Four videos for the announcements that usually go out as a plain text post.",
+    "steps": [
+      { "day": 0, "template": "015-deskpad", "title": "We are hiring", "job": "The roles and why someone would want them.", "channels": ["LinkedIn", "X", "careers page"], "hook": "A sticky note: 'We're hiring.'", "needs": ["open roles", "location or remote", "where to apply"] },
+      { "day": 0, "template": "013-marquee", "title": "Event or webinar", "job": "Name, date, agenda and where to sign up.", "channels": ["LinkedIn", "X", "email"], "hook": "The marquee lighting up with the name.", "needs": ["event name", "date and time with time zone", "three agenda points"] },
+      { "day": 0, "template": "019-atlas", "title": "New market", "job": "Where you are now available.", "channels": ["LinkedIn", "X"], "hook": "The route arcing to the new city.", "needs": ["home city", "new places"] },
+      { "day": 0, "template": "012-plug", "title": "Partnership", "job": "Two products that now work together and what moves between them.", "channels": ["LinkedIn", "X", "partner's channel"], "hook": "Two tiles snapping together.", "needs": ["partner name and permission", "three setup steps"] }
+    ]
+  }
+]
